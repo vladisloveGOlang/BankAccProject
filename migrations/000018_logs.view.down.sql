@@ -1,0 +1,1 @@
+DROP VIEW if exists logs_view;

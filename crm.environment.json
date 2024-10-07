@@ -1,0 +1,333 @@
+{
+	"id": "c208b013-b2b0-48d8-b769-74a7404e6b54",
+	"name": "crm",
+	"values": [
+		{
+			"key": "domain",
+			"value": "http://localhost:8080",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "minimumResponseTime",
+			"value": "200",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "access_token",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "federationLastUUID",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "projectLastUUID",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "taskLastUUID",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "minimumLongResponseTime",
+			"value": "3000",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "companyLastUUID",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "user_validation_code",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "userValidationCode",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "usersLastUUID",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "fieldLastUUID",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "commentLastUUID",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "usersLastEmail",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "inviteLastUUID",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "reminderLastUUID",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "int",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "directoryLastUUID",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "dictionaryLastUUID",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "dictionaryFieldLastUUID",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "directoryFieldLastUUID",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "catalogLastUUID",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "catalogFieldLastUUID",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "catalog-1-LastUUID",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "pivotCatalogUUID",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "pivotCatalogFieldUUID",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "lastCatalogUUID",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "lastUploadUUID",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "lastUploadURL",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "userLastUUID",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "projectCatalogDataLastUUID",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "permissionLastUUID",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "stopLastUUID",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "groupLastUUID",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "userResetCode",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "fieldLastFloatUUID",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "fieldLastSwitchUUID",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "fieldLastArrayUUID",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "notificationLastUUID",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "tagLastUUID",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "surveyLastUUID",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "priorityLastUUID",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "statusLastUUID",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "fieldLastLinkUUID",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "fieldLastTimeUUID",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "fieldLastPeopleUUID",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "lastEmailUUID",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "agentLastUUID",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "lastLegalEntityUUID",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "lastReceivedEmailUUID",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "lastAccountEmailUUID",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "lastCommentFileUUID",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "lastInboxEmailUUID",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "lastBankAccountUUID",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		}
+	],
+	"_postman_variable_scope": "environment",
+	"_postman_exported_at": "2024-06-18T17:28:07.019Z",
+	"_postman_exported_using": "Postman/11.2.1"
+}

@@ -1,0 +1,31 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:
+// https://github.com/microsoft/vscode-dev-containers/tree/v0.245.2/containers/go
+{
+	"name": "Go",
+	"dockerComposeFile": "docker-compose.yaml",
+	"service": "app",
+	"workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"GitHub.copilot",
+				"aldijav.golangwithdidi",
+				"golang.go",
+				"neonxp.gotools",
+				"premparihar.gotestexplorer",
+				"actboy168.tasks",
+				"42Crunch.vscode-openapi",
+				"github.vscode-github-actions",
+				"yokoe.vscode-postfix-go",
+				"seunlanlege.action-buttons",
+				"adpyke.vscode-sql-formatter",
+				"augustocdias.tasks-shell-input",
+				"rioj7.command-variable",
+				"eamodio.gitlens"
+			]
+		}
+	},
+	"features": {
+		"ghcr.io/devcontainers/features/docker-outside-of-docker:1": {},
+	},
+}

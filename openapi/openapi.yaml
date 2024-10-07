@@ -1,0 +1,5328 @@
+openapi: "3.0.0"
+info:
+  version: 0.1.5
+  title: CRM API
+  description: A main CRM Api
+  contact:
+    name: API Team
+
+servers:
+  - url: "localhost:8080"
+    description: Dev server
+
+tags:
+  - name: about
+    description: About information
+  - name: health
+    description: Health information
+  - name: profile
+    description: Profile
+  - name: federation
+    description: Federation
+  - name: project
+    description: project
+  - name: task
+    description: Tasks
+
+paths:
+  /legal_entities:
+    get:
+      summary: Get All Bank Accounts
+      tags :
+        - federation
+      responses:
+        '200':
+          description: A list of BankAccountDTO 
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BankAccountDTO'
+    post:
+      summary: Create new Bank Account
+      tags :
+        - federation
+      requestBody:
+        description: new Account
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BankAccountDTO'
+      responses:
+        '201':
+          description: create y/n?
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Ans'
+    patch:
+      summary: Change users data 
+      tags:
+        - federation
+      requestBody:
+        description: data to change
+        required: true 
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BankAccountDTO'
+      responses:
+        '200':
+          description: changed y/n?
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ans'
+    delete:
+      summary: Delete user by id
+      tags:
+        - federation
+      requestBody:
+        description: data to change
+        required: true
+        content: 
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BankAccountDTO'
+      responses:
+        '200':
+          description: changed y/n?
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ans'
+    
+        
+  /about:
+    get:
+      tags:
+        - about
+      responses:
+        200:
+          description: Returns about information
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/About"
+  /health:
+    get:
+      tags:
+        - health
+      responses:
+        200:
+          description: Returns health information
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/Health"
+
+  # Profile
+  /profile:
+    post:
+      description: Register user by name, phone, and email
+      tags:
+        - profile
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: "#/components/schemas/ProfileRegisterRequest"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/UUIDResponse"
+          headers:
+            Hint:
+              schema:
+                type: string
+              description: System hint
+
+    get:
+      description: Get user profile
+      tags:
+        - profile
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/ProfileDTO"
+
+    delete:
+      tags:
+        - profile
+      responses:
+        200:
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+                example: TOKEN=secret; Path=/; HttpOnly
+          description: Delete current user
+
+  /profile/photo:
+    patch:
+      tags:
+        - profile
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        200:
+          description: Upload user photo to s3
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/ProfilePhotoDTO"
+
+    delete:
+      description: Delete user photo from s3
+      tags:
+        - profile
+      responses:
+        200:
+          description: Ok
+        401:
+          description: Unauthorized
+
+  /profile/validate:
+    post:
+      description: Validate user by code (from email)
+      tags:
+        - profile
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: "#/components/schemas/ProfileValidateRequest"
+      responses:
+        200:
+          description: Ok
+
+  /profile/validate-simple:
+    post:
+      description: Validate user by email and num code
+      tags:
+        - profile
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: "#/components/schemas/ProfileValidateSimpleRequest"
+      responses:
+        200:
+          description: Ok
+
+  /profile/color:
+    patch:
+      description: Change user color
+      tags:
+        - profile
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - color
+              properties:
+                color:
+                  type: string
+                  x-oapi-codegen-extra-tags:
+                    validate: "color"
+      responses:
+        200:
+          description: Ok
+
+  /profile/preferences:
+    patch:
+      description: Change profile preferences
+      tags:
+        - profile
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                timezone:
+                  type: string
+      responses:
+        200:
+          description: Ok
+
+  /profile/fio:
+    patch:
+      description: Change user fio
+      tags:
+        - profile
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  x-oapi-codegen-extra-tags:
+                    validate: "trim,name,omitempty,min=3,max=50"
+                lname:
+                  type: string
+                  x-oapi-codegen-extra-tags:
+                    validate: "trim,name,omitempty,max=50"
+                pname:
+                  type: string
+                  x-oapi-codegen-extra-tags:
+                    validate: "trim,name,omitempty,max=50"
+      responses:
+        200:
+          description: Ok
+
+  /profile/phone:
+    patch:
+      description: Change user phone
+      tags:
+        - profile
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - phone
+              properties:
+                phone:
+                  type: integer
+                  x-oapi-codegen-extra-tags:
+                    validate: "trim,min=10000000000,max=9999999999999"
+      responses:
+        200:
+          description: Ok
+
+  /profile/validate/send:
+    post:
+      description: Send email with validation code
+      tags:
+        - profile
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: "#/components/schemas/ProfileSentValidateRequest"
+      responses:
+        200:
+          description: Validate user code
+          headers:
+            Hint:
+              schema:
+                type: string
+              description: System hint
+
+  /profile/validate-simple/send:
+    post:
+      description: Send email with validation code
+      tags:
+        - profile
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: "#/components/schemas/ProfileSentValidateRequest"
+      responses:
+        200:
+          description: Validate user code
+          headers:
+            Hint:
+              schema:
+                type: string
+              description: System hint
+
+  /profile/reset/send:
+    post:
+      description: Send email with reset code
+      tags:
+        - profile
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: "#/components/schemas/ProfileResetSendRequest"
+      responses:
+        200:
+          description: Validate user code
+          headers:
+            Hint:
+              schema:
+                type: string
+              description: System hint
+
+  /profile/reset:
+    post:
+      description: Change password
+      tags:
+        - profile
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: "#/components/schemas/ProfileResetRequest"
+      responses:
+        200:
+          description: Ok
+
+  /profile/login:
+    post:
+      description: Login user by email and password
+      tags:
+        - profile
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: "#/components/schemas/ProfileLoginRequest"
+      responses:
+        200:
+          description: Validate user code
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+                example: TOKEN=secret; Path=/; HttpOnly
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/ProfileLoginResponse"
+
+  /profile/logout:
+    get:
+      description: Logout
+      tags:
+        - profile
+      responses:
+        200:
+          description: Ok
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+
+  /profile/password:
+    patch:
+      description: Change user password
+      tags:
+        - profile
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: "#/components/schemas/ProfileChangePasswordRequest"
+      responses:
+        200:
+          description: ok
+        401:
+          description: Unauthorized
+
+  /profile/like:
+    post:
+      description: Like or unlike something
+      tags:
+        - profile
+      requestBody:
+        content:
+          application/json:
+            schema:
+              required:
+                - uuid
+                - type
+              properties:
+                uuid:
+                  type: string
+                  format: uuid
+                type:
+                  type: string
+                  enum: [task, project, federation, company]
+      responses:
+        200:
+          description: Ok
+
+  /profile/dislike:
+    post:
+      description: Dislike something
+      tags:
+        - profile
+      requestBody:
+        content:
+          application/json:
+            schema:
+              required:
+                - uuid
+                - type
+              properties:
+                uuid:
+                  type: string
+                  format: uuid
+                type:
+                  type: string
+                  enum: [task, project, federation, company]
+      responses:
+        200:
+          description: Ok
+
+  /profile/login_as:
+    post:
+      description: Login as user by email
+      tags:
+        - profile
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: "#/components/schemas/ProfileLoginAsRequest"
+      responses:
+        200:
+          description: Validate user code
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+                example: TOKEN=secret; Path=/; HttpOnly
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/ProfileLoginResponse"
+
+  /profile/likes:
+    get:
+      description: Get Likes
+      tags:
+        - profile
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - projects
+                  - tasks
+                  - federations
+                  - companies
+                properties:
+                  projects:
+                    type: array
+                    items:
+                      type: string
+                      format: uuid
+                  tasks:
+                    type: array
+                    items:
+                      type: string
+                      format: uuid
+                  federations:
+                    type: array
+                    items:
+                      type: string
+                      format: uuid
+                  companies:
+                    type: array
+                    items:
+                      type: string
+                      format: uuid
+
+  /profile/notifications:
+    get:
+      description: Get user's notifications
+      tags:
+        - profile
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - count
+                  - items
+                properties:
+                  count:
+                    type: integer
+                  items:
+                    type: array
+                    oneOf:
+                      - $ref: "#/components/schemas/NotificationReminderDTO"
+                      - $ref: "#/components/schemas/NotificationTaskDTO"
+
+    delete:
+      description: Delete all user's notifications
+      tags:
+        - profile
+      responses:
+        200:
+          description: Ok
+
+  /profile/notifications/task/{UUID}/star:
+    parameters:
+      - $ref: "#/components/parameters/uuid"
+    post:
+      description: Post task star notification
+      tags:
+        - profile
+      responses:
+        200:
+          description: Ok
+    delete:
+      description: Delete task star notification
+      tags:
+        - profile
+      responses:
+        200:
+          description: Ok
+
+  /profile/notifications/task/{UUID}/hide:
+    parameters:
+      - $ref: "#/components/parameters/uuid"
+    post:
+      description: Hide task notification
+      tags:
+        - profile
+      responses:
+        200:
+          description: Ok
+
+  /profile/invite:
+    get:
+      description: Get user's invites
+      tags:
+        - profile
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - count
+                  - items
+                properties:
+                  count:
+                    type: integer
+                  items:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/InviteDTO"
+
+  /profile/invite/{UUID}/accept:
+    patch:
+      description: Accept invite
+      tags:
+        - profile
+      parameters:
+        - $ref: "#/components/parameters/uuid"
+      responses:
+        200:
+          description: Ok
+
+  /profile/invite/{UUID}/decline:
+    patch:
+      description: Decline invite
+      tags:
+        - profile
+      parameters:
+        - $ref: "#/components/parameters/uuid"
+      responses:
+        200:
+          description: Ok
+
+  /federation:
+    post:
+      description: "
+        ### Create federation
+
+        After federation creation, the current user (creator) will be added to the federation_users list.
+
+        > You should **not** additionaly call /federation/{UUID}/user.
+        "
+      tags:
+        - federation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: "#/components/schemas/FederationCreateRequest"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/UUIDResponse"
+
+  /federation/{UUID}:
+    get:
+      description: Get federation by uuid
+      tags:
+        - federation
+      parameters:
+        - $ref: "#/components/parameters/uuid"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/FederationDTO"
+
+    delete:
+      parameters:
+        - $ref: "#/components/parameters/uuid"
+      description: Delete federation
+      tags:
+        - federation
+      responses:
+        200:
+          description: Ok
+        401:
+          description: Unauthorized
+
+  /permissions:
+    post:
+      description: Get permissions
+      tags:
+        - federation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: "#/components/schemas/PermissionCreateRequest"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - user_uuid
+                  - updated_at
+                properties:
+                  user_uuid:
+                    type: string
+                    format: uuid
+                  updated_at:
+                    type: string
+                    format: date-time
+
+  /permissions/{UUID}:
+    get:
+      description: Get permissions
+      tags:
+        - federation
+      parameters:
+        - $ref: "#/components/parameters/uuid"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - user_uuid
+                  - federation_uuid
+                  - updated_at
+                  - created_at
+                  - rules
+                properties:
+                  user_uuid:
+                    type: string
+                    format: uuid
+                  federation_uuid:
+                    type: string
+                    format: uuid
+                  updated_at:
+                    type: string
+                    format: date-time
+                  created_at:
+                    type: string
+                    format: date-time
+                  rules:
+                    type: object
+                    $ref: "#/components/schemas/PermissionRulesDTO"
+    delete:
+      description: Delete permissions
+      tags:
+        - federation
+      parameters:
+        - $ref: "#/components/parameters/uuid"
+      responses:
+        200:
+          description: Ok
+
+  /company:
+    post:
+      description: "
+        ### Create federation company
+
+        After company creation, the current user (creator) will be added to the comapny_users list.
+
+        > You should **not** additionaly call /company/{UUID}/user.
+        "
+      tags:
+        - federation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: "#/components/schemas/FederationCreateCompanyRequest"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/UUIDResponse"
+
+  /company/{UUID}/sms/options:
+    parameters:
+      - $ref: "#/components/parameters/uuid"
+    post:
+      description: Update sms options
+      tags:
+        - federation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - api
+                - from
+              properties:
+                api:
+                  type: string
+                from:
+                  type: string
+      responses:
+        200:
+          description: Ok
+
+  /company/{UUID}/sms/send:
+    parameters:
+      - $ref: "#/components/parameters/uuid"
+    post:
+      description: Send sms to company
+      tags:
+        - federation
+      parameters:
+        - in: header
+          name: Mock-Sms
+          schema:
+            type: string
+            format: boolean
+          required: false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - phone
+                - text
+              properties:
+                phone:
+                  type: integer
+                  x-oapi-codegen-extra-tags:
+                    validate: "trim,min=1000000000,max=9999999999999"
+                text:
+                  type: string
+                  x-oapi-codegen-extra-tags:
+                    validate: "trim,min=1,max=100"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+
+  /company/{UUID}/sms/cost:
+    parameters:
+      - $ref: "#/components/parameters/uuid"
+    post:
+      description: Send sms to company
+      tags:
+        - federation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - phone
+                - text
+              properties:
+                phone:
+                  type: integer
+                  x-oapi-codegen-extra-tags:
+                    validate: "trim,min=1000000000,max=9999999999999"
+                text:
+                  type: string
+                  x-oapi-codegen-extra-tags:
+                    validate: "trim,min=1,max=100"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+
+  /company/{UUID}/sms:
+    parameters:
+      - $ref: "#/components/parameters/uuid"
+    get:
+      description: Get sms
+      tags:
+        - federation
+      parameters:
+        - name: offset
+          required: false
+          in: query
+          schema:
+            type: integer
+            x-oapi-codegen-extra-tags:
+              validate: "trim,min=0,max=10000"
+        - name: limit
+          required: false
+          in: query
+          schema:
+            type: integer
+            x-oapi-codegen-extra-tags:
+              validate: "trim,min=1,max=200"
+        - name: is_my
+          required: false
+          in: query
+          schema:
+            type: boolean
+            x-oapi-codegen-extra-tags:
+              validate: "boolean"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - total
+                  - count
+                  - items
+                properties:
+                  total:
+                    type: integer
+                    x-go-type: int64
+                  count:
+                    type: integer
+                  items:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/SmsDTO"
+
+  /company/{UUID}:
+    get:
+      description: Get company by uuid
+      tags:
+        - federation
+      parameters:
+        - $ref: "#/components/parameters/uuid"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/CompanyDTO"
+    delete:
+      description: Delete company
+      parameters:
+        - $ref: "#/components/parameters/uuid"
+      tags:
+        - federation
+      responses:
+        200:
+          description: Ok
+
+  /company/{UUID}/name:
+    patch:
+      description: Change company name
+      tags:
+        - federation
+      parameters:
+        - $ref: "#/components/parameters/uuid"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: "#/components/schemas/NameRequiredRequest"
+      responses:
+        200:
+          description: Ok
+
+  /company/{UUID}/user:
+    post:
+      description: Add user (existed) to company
+      parameters:
+        - $ref: "#/components/parameters/uuid"
+      tags:
+        - federation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: "#/components/schemas/CompanyAddUserRequest"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/UUIDResponse"
+
+  /company/{UUID}/user/{userUUID}:
+    delete:
+      description: Delete user from federation
+      tags:
+        - federation
+      parameters:
+        - $ref: "#/components/parameters/uuid"
+        - $ref: "#/components/parameters/userUUID"
+      responses:
+        200:
+          description: Ok
+
+  /company/{UUID}/group:
+    post:
+      description: Add group to company
+      tags:
+        - federation
+      parameters:
+        - $ref: "#/components/parameters/uuid"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: "#/components/schemas/AddGroupRequest"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/UUIDResponse"
+
+    get:
+      description: Get company groups
+      tags:
+        - federation
+      parameters:
+        - $ref: "#/components/parameters/uuid"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - count
+                  - items
+                properties:
+                  count:
+                    type: integer
+                  items:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/GroupDTO"
+
+  /company/{UUID}/group/{entityUUID}:
+    delete:
+      description: Delete group from company
+      tags:
+        - federation
+      parameters:
+        - $ref: "#/components/parameters/uuid"
+        - $ref: "#/components/parameters/entityUUID"
+      responses:
+        200:
+          description: Ok
+
+    patch:
+      description: Change group name
+      tags:
+        - federation
+      parameters:
+        - $ref: "#/components/parameters/uuid"
+        - $ref: "#/components/parameters/entityUUID"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: "#/components/schemas/PatchGroupRequest"
+      responses:
+        200:
+          description: Ok
+
+  /group/{UUID}/user:
+    get:
+      description: Get group users
+      tags:
+        - federation
+      parameters:
+        - $ref: "#/components/parameters/uuid"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - count
+                  - items
+                properties:
+                  count:
+                    type: integer
+                  items:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/UserDTO"
+
+    post:
+      description: Add user to group
+      tags:
+        - federation
+      parameters:
+        - $ref: "#/components/parameters/uuid"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - uuid
+              properties:
+                uuid:
+                  type: string
+                  format: uuid
+                  x-oapi-codegen-extra-tags:
+                    validate: "uuid"
+      responses:
+        200:
+          description: Ok
+
+    delete:
+      description: Delete user from group
+      tags:
+        - federation
+      parameters:
+        - $ref: "#/components/parameters/uuid"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - uuid
+              properties:
+                uuid:
+                  type: string
+                  format: uuid
+                  x-oapi-codegen-extra-tags:
+                    validate: "uuid"
+      responses:
+        200:
+          description: Ok
+
+  /federation/{UUID}/name:
+    patch:
+      description: Chande federation name
+      tags:
+        - federation
+      parameters:
+        - $ref: "#/components/parameters/uuid"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: "#/components/schemas/NameRequiredRequest"
+      responses:
+        200:
+          description: Ok
+
+  /federation/{UUID}/user:
+    post:
+      description: Add user (existed) to federation
+      parameters:
+        - $ref: "#/components/parameters/uuid"
+      tags:
+        - federation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: "#/components/schemas/FederationAddUserRequest"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/UUIDResponse"
+
+  /federation/{UUID}/user/{userUUID}:
+    delete:
+      description: Delete user from federation
+      tags:
+        - federation
+      parameters:
+        - $ref: "#/components/parameters/uuid"
+        - $ref: "#/components/parameters/userUUID"
+      responses:
+        200:
+          description: Ok
+
+  /federation/{UUID}/invite:
+    parameters:
+      - $ref: "#/components/parameters/uuid"
+    post:
+      description: Invite user to federation
+      tags:
+        - federation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: "#/components/schemas/InviteCreateRequest"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/UUIDResponse"
+    get:
+      description: Get federations's invites
+      tags:
+        - federation
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - count
+                  - items
+                properties:
+                  count:
+                    type: integer
+                  items:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/InviteDTO"
+
+  /federation/{UUID}/invite/{entityUUID}:
+    delete:
+      description: Delete federation invite
+      tags:
+        - federation
+      parameters:
+        - $ref: "#/components/parameters/uuid"
+        - $ref: "#/components/parameters/entityUUID"
+      responses:
+        200:
+          description: Ok
+
+  /project:
+    post:
+      description: Create project
+      tags:
+        - federation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: "#/components/schemas/ProjectCreateRequest"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/UUIDResponse"
+
+  /federation/{UUID}/project:
+    parameters:
+      - $ref: "#/components/parameters/uuid"
+    get:
+      description: Get company projects
+      tags:
+        - federation
+      parameters:
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            default: 50
+            minimum: 1
+        - in: query
+          name: offset
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+        - in: query
+          name: company_uuid
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - count
+                  - total
+                  - items
+                properties:
+                  count:
+                    type: integer
+                  items:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/ProjectDTO"
+
+  /project/{UUID}:
+    get:
+      description: Get project by uuid
+      tags:
+        - federation
+      parameters:
+        - $ref: "#/components/parameters/uuid"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/ProjectDTO"
+
+    delete:
+      description: Delete project
+      tags:
+        - federation
+      parameters:
+        - $ref: "#/components/parameters/uuid"
+      responses:
+        200:
+          description: Ok
+
+    patch:
+      description: Change params
+      tags:
+        - federation
+      parameters:
+        - $ref: "#/components/parameters/uuid"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: "#/components/schemas/ProjectRequestParams"
+      responses:
+        200:
+          description: Ok
+
+  /project/{UUID}/name:
+    patch:
+      description: Chande project name
+      tags:
+        - federation
+      parameters:
+        - $ref: "#/components/parameters/uuid"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: "#/components/schemas/NameRequest"
+      responses:
+        200:
+          description: Ok
+
+  /project/{UUID}/description:
+    patch:
+      description: Chande project description
+      tags:
+        - federation
+      parameters:
+        - $ref: "#/components/parameters/uuid"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - description
+              properties:
+                description:
+                  type: string
+                  x-oapi-codegen-extra-tags:
+                    validate: "max=5000"
+      responses:
+        200:
+          description: Ok
+
+  /project/{UUID}/field/{entityUUID}:
+    post:
+      description: Add field to project
+      tags:
+        - federation
+      parameters:
+        - $ref: "#/components/parameters/uuid"
+        - $ref: "#/components/parameters/entityUUID"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - graph
+                - required_on_statuses
+                - style
+              properties:
+                required_on_statuses:
+                  type: array
+                  items:
+                    type: integer
+                style:
+                  type: string
+      responses:
+        200:
+          description: Ok
+
+    delete:
+      description: Delete field from project
+      tags:
+        - federation
+      parameters:
+        - $ref: "#/components/parameters/uuid"
+        - $ref: "#/components/parameters/entityUUID"
+      responses:
+        200:
+          description: Ok
+
+  /project/{UUID}/graph:
+    patch:
+      description: Change status graph
+      tags:
+        - federation
+      parameters:
+        - $ref: "#/components/parameters/uuid"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - graph
+              properties:
+                graph:
+                  type: object
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+
+  /project/{UUID}/options:
+    patch:
+      description: Change options
+      tags:
+        - federation
+      parameters:
+        - $ref: "#/components/parameters/uuid"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: "#/components/schemas/ProjectRequestOptions"
+      responses:
+        200:
+          description: Ok
+
+  /project/{UUID}/catalog:
+    post:
+      description: Add catalog data to project
+      tags:
+        - federation
+      parameters:
+        - $ref: "#/components/parameters/uuid"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - catalog_name
+                - value
+              properties:
+                catalog_name:
+                  type: string
+                  x-enum-varnames:
+                    - reasons
+                  x-oapi-codegen-extra-tags:
+                    validate: "trim,required,eq=reasons|eq=reasons"
+                  x-go-type: domain.ProjectCatalogType
+                value:
+                  type: string
+                  x-oapi-codegen-extra-tags:
+                    validate: "trim,min=1,max=500"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - uuid
+                properties:
+                  uuid:
+                    type: string
+                    format: uuid
+
+    get:
+      description: Get catalog data from project
+      tags:
+        - federation
+      parameters:
+        - $ref: "#/components/parameters/uuid"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - items
+                  - count
+                properties:
+                  count:
+                    type: integer
+                  items:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/ProjectCatalogDataDTO"
+
+  /tag:
+    post:
+      description: Create tag
+      tags:
+        - federation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: "#/components/schemas/TagCreateRequest"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/UUIDResponse"
+    get:
+      description: Get tags
+      tags:
+        - federation
+      parameters:
+        - name: company_uuid
+          required: true
+          in: query
+          schema:
+            type: string
+            format: uuid
+            x-oapi-codegen-extra-tags:
+              validate: "uuid"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - count
+                  - items
+                properties:
+                  count:
+                    type: integer
+                  items:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/TagDTO"
+  /tag/{UUID}:
+    delete:
+      description: Delete tag
+      tags:
+        - federation
+      parameters:
+        - $ref: "#/components/parameters/uuid"
+      responses:
+        200:
+          description: Ok
+    patch:
+      description: Change tag name
+      tags:
+        - federation
+      parameters:
+        - $ref: "#/components/parameters/uuid"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - color
+              properties:
+                name:
+                  type: string
+                  x-oapi-codegen-extra-tags:
+                    validate: "trim,min=1,max=100"
+                color:
+                  type: string
+                  x-oapi-codegen-extra-tags:
+                    validate: "color"
+      responses:
+        200:
+          description: Ok
+
+  /profile/survey:
+    post:
+      description: Create survey
+      tags:
+        - federation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: "#/components/schemas/SurveyCreateRequest"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/UUIDResponse"
+
+  /profile/survey/{UUID}:
+    get:
+      description: Get survey by uuid
+      tags:
+        - federation
+      parameters:
+        - $ref: "#/components/parameters/uuid"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/SurveyDTO"
+    delete:
+      description: Delete survey
+      tags:
+        - federation
+      parameters:
+        - $ref: "#/components/parameters/uuid"
+      responses:
+        200:
+          description: Ok
+
+  /company/{UUID}/project/catalog/{entityName}:
+    get:
+      description: Get company projects data
+      tags:
+        - federation
+      parameters:
+        - $ref: "#/components/parameters/uuid"
+        - $ref: "#/components/parameters/entityName"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - items
+                  - count
+                properties:
+                  count:
+                    type: integer
+                  items:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/ProjectCatalogDataDTO"
+
+  /company/{UUID}/priorities:
+    post:
+      description: Create company priority
+      tags:
+        - federation
+      parameters:
+        - $ref: "#/components/parameters/uuid"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: "#/components/schemas/CompanyPriorityCreateRequest"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/UUIDResponse"
+    get:
+      description: Get company priorities
+      tags:
+        - federation
+      parameters:
+        - $ref: "#/components/parameters/uuid"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - count
+                  - items
+                properties:
+                  count:
+                    type: integer
+                  items:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/CompanyPriorityDTO"
+
+  /company/{UUID}/priorities/{entityUUID}:
+    delete:
+      description: Delete company priority
+      tags:
+        - federation
+      parameters:
+        - $ref: "#/components/parameters/uuid"
+        - $ref: "#/components/parameters/entityUUID"
+      responses:
+        200:
+          description: Ok
+    patch:
+      description: Change company priority
+      tags:
+        - federation
+      parameters:
+        - $ref: "#/components/parameters/uuid"
+        - $ref: "#/components/parameters/entityUUID"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - color
+              properties:
+                name:
+                  type: string
+                  x-oapi-codegen-extra-tags:
+                    validate: "trim,min=1,max=50"
+                color:
+                  type: string
+                  x-oapi-codegen-extra-tags:
+                    validate: "color"
+      responses:
+        200:
+          description: Ok
+
+  /project/{UUID}/status:
+    post:
+      description: Create project status
+      tags:
+        - federation
+      parameters:
+        - $ref: "#/components/parameters/uuid"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: "#/components/schemas/ProjectStatusCreateRequest"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/UUIDResponse"
+    get:
+      description: Get project statuses
+      tags:
+        - federation
+      parameters:
+        - $ref: "#/components/parameters/uuid"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - count
+                  - items
+                properties:
+                  count:
+                    type: integer
+                  items:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/ProjectStatusDTO"
+
+  /project/{UUID}/status/{entityUUID}:
+    delete:
+      description: Delete project status
+      tags:
+        - federation
+      parameters:
+        - $ref: "#/components/parameters/uuid"
+        - $ref: "#/components/parameters/entityUUID"
+      responses:
+        200:
+          description: Ok
+    patch:
+      description: Change project status
+      tags:
+        - federation
+      parameters:
+        - $ref: "#/components/parameters/uuid"
+        - $ref: "#/components/parameters/entityUUID"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - color
+                - description
+              properties:
+                name:
+                  type: string
+                  x-oapi-codegen-extra-tags:
+                    validate: "trim,min=1,max=50"
+                color:
+                  type: string
+                  x-oapi-codegen-extra-tags:
+                    validate: "color"
+                description:
+                  type: string
+                  x-oapi-codegen-extra-tags:
+                    validate: "trim,max=5000"
+      responses:
+        200:
+          description: Ok
+
+  /project/{UUID}/catalog/{entityName}:
+    get:
+      description: Get catalog data from project
+      tags:
+        - federation
+      parameters:
+        - $ref: "#/components/parameters/uuid"
+        - $ref: "#/components/parameters/entityName"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - items
+                  - count
+                properties:
+                  count:
+                    type: integer
+                  items:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/ProjectCatalogDataDTO"
+
+  /project/{UUID}/catalog/{entityUUID}:
+    delete:
+      description: Delete catalog data from project
+      tags:
+        - federation
+      parameters:
+        - $ref: "#/components/parameters/uuid"
+        - $ref: "#/components/parameters/entityUUID"
+      responses:
+        200:
+          description: Ok
+
+  /company/{UUID}/fields:
+    get:
+      description: Get project fields
+      tags:
+        - federation
+      parameters:
+        - $ref: "#/components/parameters/uuid"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - items
+                  - count
+                properties:
+                  count:
+                    type: integer
+                  items:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/CompanyFieldDTO"
+    post:
+      description: Create project field
+      tags:
+        - federation
+      parameters:
+        - $ref: "#/components/parameters/uuid"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: "#/components/schemas/ProjectFieldCreateRequest"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - uuid
+                  - hash
+                  - type
+                  - type_description
+                  - icon
+                properties:
+                  uuid:
+                    type: string
+                  hash:
+                    type: string
+                  type:
+                    type: integer
+                    enum: [0, 1, 2, 3, 4, 5]
+                    x-enum-varnames:
+                      - integer
+                      - float
+                      - string
+                      - text
+                      - bool
+                    x-go-type: domain.FieldDataType
+                    x-go-type-import:
+                      path: github.com/krisch/crm-backend/dto
+                  type_description:
+                    type: string
+                  type_uuid:
+                    type: string
+                    format: uuid
+                  icon:
+                    type: string
+
+  /company/{UUID}/fields/{entityUUID}:
+    delete:
+      description: Delete project field
+      tags:
+        - federation
+      parameters:
+        - $ref: "#/components/parameters/uuid"
+        - $ref: "#/components/parameters/entityUUID"
+      responses:
+        200:
+          description: Ok
+    put:
+      description: Update project field
+      tags:
+        - federation
+      parameters:
+        - $ref: "#/components/parameters/uuid"
+        - $ref: "#/components/parameters/entityUUID"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: "#/components/schemas/ProjectFieldPutRequest"
+      responses:
+        200:
+          description: Ok
+
+  /project/{UUID}/user:
+    post:
+      description: Add user (existed) to project
+      parameters:
+        - $ref: "#/components/parameters/uuid"
+      tags:
+        - federation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: "#/components/schemas/ProjectAddUserRequest"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/UUIDResponse"
+
+  /project/{UUID}/user/{userUUID}:
+    delete:
+      description: Delete user from project
+      tags:
+        - federation
+      parameters:
+        - $ref: "#/components/parameters/uuid"
+        - $ref: "#/components/parameters/userUUID"
+      responses:
+        200:
+          description: Ok
+
+  /task:
+    post:
+      description: Create task
+      tags:
+        - task
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: "#/components/schemas/TaskCreateRequest"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - id
+                  - uuid
+                properties:
+                  id:
+                    type: integer
+                  uuid:
+                    type: string
+                    format: uuid
+
+    get:
+      description: Search tasks
+      tags:
+        - task
+      parameters:
+        - name: offset
+          required: false
+          in: query
+          schema:
+            type: integer
+            x-oapi-codegen-extra-tags:
+              validate: "trim,min=0,max=1000"
+        - name: limit
+          required: false
+          in: query
+          schema:
+            type: integer
+            x-oapi-codegen-extra-tags:
+              validate: "trim,min=1,max=200"
+        - name: is_my
+          required: false
+          in: query
+          schema:
+            type: boolean
+        - name: status
+          required: false
+          in: query
+          schema:
+            type: integer
+            x-oapi-codegen-extra-tags:
+              validate: "trim,gte=0,lte=100"
+        - name: is_epic
+          required: false
+          in: query
+          schema:
+            type: boolean
+        - name: project_uuid
+          required: true
+          in: query
+          schema:
+            type: string
+            format: uuid
+            x-oapi-codegen-extra-tags:
+              validate: "uuid"
+        - name: federation_uuid
+          required: true
+          in: query
+          schema:
+            type: string
+            format: uuid
+            x-oapi-codegen-extra-tags:
+              validate: "uuid"
+        - name: participated
+          required: false
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+            x-oapi-codegen-extra-tags:
+              validate: "dive,email"
+        - name: tags
+          required: false
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+        - name: path
+          required: false
+          in: query
+          schema:
+            type: string
+        - name: name
+          required: false
+          in: query
+          schema:
+            type: string
+            x-oapi-codegen-extra-tags:
+              validate: "trim,min=1,max=200"
+        - name: fields
+          required: false
+          in: query
+          schema:
+            type: string
+            x-oapi-codegen-extra-tags:
+              validate: "trim,min=1,max=500"
+        - name: order
+          required: false
+          in: query
+          schema:
+            type: string
+            x-oapi-codegen-extra-tags:
+              validate: "trim,min=1,max=30"
+        - name: by
+          required: false
+          in: query
+          schema:
+            type: string
+            x-oapi-codegen-extra-tags:
+              validate: "trim,dive,oneof=asc desc"
+        - name: format
+          required: false
+          in: query
+          schema:
+            type: string
+            x-oapi-codegen-extra-tags:
+              validate: "trim,dive,oneof=json xlsx"
+
+      responses:
+        200:
+          description: Ok
+          headers:
+            cache-control:
+              schema:
+                type: string
+              description: Cache control
+            Content-Type:
+              schema:
+                type: string
+              description: Content type
+            Content-Disposition:
+              schema:
+                type: string
+              description: Content disposition
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - total
+                  - count
+                  - items
+                properties:
+                  total:
+                    type: integer
+                    x-go-type: int64
+                  count:
+                    type: integer
+                  items:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/TaskDTOs"
+
+            application/xlsx:
+              schema:
+                type: string
+                format: binary
+
+  /task/{UUID}:
+    parameters:
+      - $ref: "#/components/parameters/uuid"
+    get:
+      description: Get task
+      tags:
+        - task
+      responses:
+        200:
+          description: Ok
+          headers:
+            cache-control:
+              schema:
+                type: string
+              description: Cache control
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/TaskDTO"
+    delete:
+      description: Delete task
+      tags:
+        - task
+      responses:
+        200:
+          description: Ok
+
+    put:
+      description: Update task
+      tags:
+        - task
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: "#/components/schemas/TaskPutRequest"
+      responses:
+        200:
+          description: Ok
+
+  /task/{UUID}/activity:
+    parameters:
+      - $ref: "#/components/parameters/uuid"
+    get:
+      description: Get activities
+      tags:
+        - task
+      parameters:
+        - $ref: "#/components/parameters/uuid"
+        - name: offset
+          required: false
+          in: query
+          schema:
+            type: integer
+            x-oapi-codegen-extra-tags:
+              validate: "min=0,max=1000"
+        - name: limit
+          required: false
+          in: query
+          schema:
+            type: integer
+            x-oapi-codegen-extra-tags:
+              validate: "min=1,max=200"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - count
+                  - items
+                  - total
+                properties:
+                  count:
+                    type: integer
+                  total:
+                    type: integer
+                    format: int64
+                  items:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/ActivityDTO"
+
+  /task/{UUID}/upload:
+    parameters:
+      - $ref: "#/components/parameters/uuid"
+
+    get:
+      description: Get files from task
+      tags:
+        - task
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - count
+                  - items
+                properties:
+                  count:
+                    type: integer
+                  items:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/UploadDTO"
+
+    patch:
+      description: Upload file to task
+      tags:
+        - task
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        200:
+          description: ok
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/UploadDTO"
+
+  /task/{UUID}/upload/{entityUUID}:
+    parameters:
+      - $ref: "#/components/parameters/uuid"
+      - $ref: "#/components/parameters/entityUUID"
+
+    delete:
+      description: Delete file from task
+      tags:
+        - task
+      responses:
+        200:
+          description: ok
+
+    get:
+      description: Get file from task
+      tags:
+        - task
+      responses:
+        302:
+          description: "302 redirect response"
+          headers:
+            location:
+              schema:
+                type: string
+              description: Location
+
+  /task/{UUID}/upload/{entityUUID}/rename:
+    parameters:
+      - $ref: "#/components/parameters/uuid"
+      - $ref: "#/components/parameters/entityUUID"
+    post:
+      description: Rename file from task
+      tags:
+        - task
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+                  x-oapi-codegen-extra-tags:
+                    validate: "trim,min=1,max=50"
+      responses:
+        200:
+          description: ok
+
+  /task/{UUID}/name:
+    patch:
+      description: Set task name
+      tags:
+        - task
+      parameters:
+        - $ref: "#/components/parameters/uuid"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: "#/components/schemas/NameRequest"
+      responses:
+        200:
+          description: Ok
+        401:
+          description: Unauthorized
+        400:
+          description: Bad request
+
+  /task/{UUID}/stop/{entityUUID}:
+    delete:
+      description: Set task stop
+      tags:
+        - task
+      parameters:
+        - $ref: "#/components/parameters/uuid"
+        - $ref: "#/components/parameters/entityUUID"
+      responses:
+        200:
+          description: Ok
+
+  /task/{UUID}/team:
+    patch:
+      description: Set task responsibles
+      tags:
+        - task
+      parameters:
+        - $ref: "#/components/parameters/uuid"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                responsible_by:
+                  type: string
+                  x-oapi-codegen-extra-tags:
+                    validate: "omitempty,optional_email"
+                implement_by:
+                  type: string
+                  x-oapi-codegen-extra-tags:
+                    validate: "omitempty,optional_email"
+                coworkers_by:
+                  type: array
+                  items:
+                    type: string
+                  x-oapi-codegen-extra-tags:
+                    validate: "omitempty,dive,email"
+                watched_by:
+                  type: array
+                  items:
+                    type: string
+                  x-oapi-codegen-extra-tags:
+                    validate: "omitempty,dive,email"
+                managed_by:
+                  type: string
+                  x-oapi-codegen-extra-tags:
+                    validate: "omitempty,optional_email"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - coworkers_by
+                  - watched_by
+                properties:
+                  responsible_by:
+                    $ref: "#/components/schemas/UserDTO"
+                  implement_by:
+                    $ref: "#/components/schemas/UserDTO"
+                  coworkers_by:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/UserDTO"
+                  watched_by:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/UserDTO"
+                  managed_by:
+                    $ref: "#/components/schemas/UserDTO"
+
+  /task/{UUID}/parent:
+    patch:
+      description: Set task parent
+      tags:
+        - task
+      parameters:
+        - $ref: "#/components/parameters/uuid"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                uuid:
+                  type: string
+                  format: uuid
+                  x-oapi-codegen-extra-tags:
+                    validate: "omitempty,uuid"
+      responses:
+        200:
+          description: Ok
+
+  /task/{UUID}/project:
+    patch:
+      description: Set task project
+      tags:
+        - task
+      parameters:
+        - $ref: "#/components/parameters/uuid"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - uuid
+                - status
+                - comment
+              properties:
+                uuid:
+                  type: string
+                  format: uuid
+                  x-oapi-codegen-extra-tags:
+                    validate: "uuid"
+                status:
+                  type: integer
+                  x-oapi-codegen-extra-tags:
+                    validate: "gte=0,lte=20"
+                comment:
+                  type: string
+                  x-oapi-codegen-extra-tags:
+                    validate: "trim,min=0,max=300"
+      responses:
+        200:
+          description: Ok
+
+  /task/{UUID}/status:
+    patch:
+      description: Set task status
+      tags:
+        - task
+      parameters:
+        - $ref: "#/components/parameters/uuid"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: "#/components/schemas/StatusRequest"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - path
+                  - stop_uuid
+                properties:
+                  path:
+                    type: array
+                    items:
+                      type: string
+                  stop_uuid:
+                    type: string
+                    format: uuid
+
+  /task/{UUID}/comment:
+    post:
+      description: Create comment
+      tags:
+        - task
+      parameters:
+        - $ref: "#/components/parameters/uuid"
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                comment:
+                  type: string
+                people:
+                  type: array
+                  items:
+                    type: string
+                reply_uuid:
+                  type: string
+                  format: uuid
+      responses:
+        200:
+          description: ok
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - uuid
+                  - comment
+                properties:
+                  uuid:
+                    type: string
+                    format: uuid
+                  comment:
+                    type: string
+                  people:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/UserDTO"
+                  reply_message:
+                    type: string
+                  uploads:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/UploadDTO"
+    get:
+      description: Get comments
+      tags:
+        - task
+      parameters:
+        - $ref: "#/components/parameters/uuid"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - items
+                  - count
+                properties:
+                  count:
+                    type: integer
+                  items:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/CommentDTO"
+
+  /task/{UUID}/comment/{entityUUID}:
+    delete:
+      description: Delete comment
+      tags:
+        - task
+      parameters:
+        - $ref: "#/components/parameters/uuid"
+        - $ref: "#/components/parameters/entityUUID"
+      responses:
+        200:
+          description: Ok
+
+    patch:
+      description: Update comment
+      tags:
+        - task
+      parameters:
+        - $ref: "#/components/parameters/uuid"
+        - $ref: "#/components/parameters/entityUUID"
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                comment:
+                  type: string
+                people:
+                  type: array
+                  items:
+                    type: string
+                reply_uuid:
+                  type: string
+                  format: uuid
+
+      responses:
+        200:
+          description: ok
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - uuid
+                  - comment
+                properties:
+                  uuid:
+                    type: string
+                    format: uuid
+                  comment:
+                    type: string
+                  people:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/UserDTO"
+                  reply_message:
+                    type: string
+                  uploads:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/UploadDTO"
+
+  /task/{UUID}/comment/{entityUUID}/like:
+    patch:
+      description: Like comment
+      tags:
+        - task
+      parameters:
+        - $ref: "#/components/parameters/uuid"
+        - $ref: "#/components/parameters/entityUUID"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - likes
+                  - liked
+                properties:
+                  liked:
+                    type: boolean
+                  likes:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/UserDTO"
+
+  /task/{UUID}/comment/{entityUUID}/file/{fileUUID}:
+    delete:
+      description: Delete file from comment
+      tags:
+        - task
+      parameters:
+        - $ref: "#/components/parameters/uuid"
+        - $ref: "#/components/parameters/entityUUID"
+        - $ref: "#/components/parameters/fileUUID"
+      responses:
+        200:
+          description: Ok
+
+  /task/{UUID}/comment/{entityUUID}/pin:
+    patch:
+      description: Pin comment
+      tags:
+        - task
+      parameters:
+        - $ref: "#/components/parameters/uuid"
+        - $ref: "#/components/parameters/entityUUID"
+      responses:
+        200:
+          description: Ok
+
+  /federation/{UUID}/agent:
+    parameters:
+      - $ref: "#/components/parameters/uuid"
+    post:
+      description: Create agent
+      tags:
+        - federation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: "#/components/schemas/AgentCreateRequest"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/UUIDResponse"
+
+    get:
+      description: Get agents
+      tags:
+        - federation
+      parameters:
+        - $ref: "#/components/parameters/uuid"
+        - name: offset
+          required: false
+          in: query
+          schema:
+            type: integer
+            x-oapi-codegen-extra-tags:
+              validate: "min=0,max=1000"
+        - name: limit
+          required: false
+          in: query
+          schema:
+            type: integer
+            x-oapi-codegen-extra-tags:
+              validate: "min=1,max=200"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - count
+                  - items
+                  - total
+                properties:
+                  count:
+                    type: integer
+                  total:
+                    type: integer
+                    format: int64
+                  items:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/AgentDTO"
+
+  /federation/{UUID}/agent/{entityUUID}:
+    delete:
+      description: Delete agent
+      tags:
+        - federation
+      parameters:
+        - $ref: "#/components/parameters/uuid"
+        - $ref: "#/components/parameters/entityUUID"
+      responses:
+        200:
+          description: Ok
+    patch:
+      description: Update agent
+      tags:
+        - federation
+      parameters:
+        - $ref: "#/components/parameters/uuid"
+        - $ref: "#/components/parameters/entityUUID"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: "#/components/schemas/AgentPatchRequest"
+      responses:
+        200:
+          description: Ok
+
+  /reminder:
+    get:
+      description: Get reminder
+      tags:
+        - reminder
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - items
+                  - count
+                  - type
+                  - status
+                properties:
+                  count:
+                    type: integer
+                  items:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/ReminderDTO"
+
+    post:
+      description: Create reminder
+      tags:
+        - reminder
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: "#/components/schemas/ReminderCreateRequest"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/UUIDResponse"
+
+  /reminder/{UUID}:
+    put:
+      description: Update reminder
+      tags:
+        - reminder
+      parameters:
+        - $ref: "#/components/parameters/uuid"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: "#/components/schemas/ReminderPutRequest"
+      responses:
+        200:
+          description: Ok
+
+    delete:
+      description: Delete reminder
+      tags:
+        - reminder
+      parameters:
+        - $ref: "#/components/parameters/uuid"
+      responses:
+        200:
+          description: Ok
+
+  /reminder/{UUID}/status:
+    patch:
+      description: Change reminder status
+      tags:
+        - reminder
+      parameters:
+        - $ref: "#/components/parameters/uuid"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: "#/components/schemas/StatusRequest"
+      responses:
+        200:
+          description: Ok
+
+  /user:
+    get:
+      description: Search users
+      tags:
+        - federation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: "#/components/schemas/SearchUserRequest"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - items
+                  - count
+                properties:
+                  count:
+                    type: integer
+                  items:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/UserDTO"
+
+  /catalog:
+    post:
+      description: Create catalog
+      tags:
+        - catalog
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: "#/components/schemas/CatalogCreateRequest"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - uuid
+                properties:
+                  uuid:
+                    type: string
+                    format: uuid
+
+    get:
+      description: Get catalogs
+      tags:
+        - catalog
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: "#/components/schemas/CatalogSearchRequest"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - items
+                  - count
+                properties:
+                  count:
+                    type: integer
+                  items:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/CatalogDTO"
+
+  /catalog/{UUID}:
+    get:
+      description: Get catalog
+      tags:
+        - catalog
+      parameters:
+        - $ref: "#/components/parameters/uuid"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/CatalogDTO"
+
+    delete:
+      description: Delete catalog
+      tags:
+        - catalog
+      parameters:
+        - $ref: "#/components/parameters/uuid"
+      responses:
+        200:
+          description: Ok
+
+  /catalog/{UUID}/name:
+    patch:
+      description: Change catalog name
+      tags:
+        - catalog
+      parameters:
+        - $ref: "#/components/parameters/uuid"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: "#/components/schemas/NameRequest"
+      responses:
+        200:
+          description: Ok
+
+  /catalog/{UUID}/fields:
+    get:
+      description: Get catalog fields
+      tags:
+        - catalog
+      parameters:
+        - $ref: "#/components/parameters/uuid"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - items
+                  - count
+                properties:
+                  count:
+                    type: integer
+                  items:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/CatalogFieldDTO"
+
+    post:
+      description: Create catalog field
+      tags:
+        - catalog
+      parameters:
+        - $ref: "#/components/parameters/uuid"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: "#/components/schemas/CatalogFieldCreateRequest"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - uuid
+                  - catalog_uuid
+                  - hash
+                  - type
+                  - type_description
+                properties:
+                  uuid:
+                    type: string
+                    format: uuid
+                  catalog_uuid:
+                    type: string
+                    format: uuid
+                  hash:
+                    type: string
+                  type:
+                    type: integer
+                    enum: [0, 1, 2, 3, 4, 5, 6, 7, 8]
+                    x-enum-varnames:
+                      - integer
+                      - float
+                      - string
+                      - text
+                      - bool
+                    x-go-type: domain.FieldDataType
+                    x-go-type-import:
+                      path: github.com/krisch/crm-backend/dto
+                  type_description:
+                    type: string
+                  type_uuid:
+                    type: string
+                    format: uuid
+
+  /catalog/{UUID}/fields/named:
+    post:
+      description: Create catalog field
+      tags:
+        - catalog
+      parameters:
+        - $ref: "#/components/parameters/uuid"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: "#/components/schemas/CatalogNamedFieldCreateRequest"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - uuid
+                  - hash
+                  - type
+                  - type_description
+                properties:
+                  uuid:
+                    type: string
+                  catalog_uuid:
+                    type: string
+                    format: uuid
+                  hash:
+                    type: string
+                  type:
+                    type: integer
+                    enum: [0, 1, 2, 3, 4, 5, 6, 7, 8]
+                    x-enum-varnames:
+                      - integer
+                      - float
+                      - string
+                      - text
+                      - bool
+                    x-go-type: domain.FieldDataType
+                    x-go-type-import:
+                      path: github.com/krisch/crm-backend/dto
+                  type_description:
+                    type: string
+                  type_uuid:
+                    type: string
+                    format: uuid
+
+  /catalog/{UUID}/fields/{entityUUID}:
+    delete:
+      description: Delete project field
+      tags:
+        - catalog
+      parameters:
+        - $ref: "#/components/parameters/uuid"
+        - $ref: "#/components/parameters/entityUUID"
+      responses:
+        200:
+          description: Ok
+    put:
+      description: Update project field
+      tags:
+        - catalog
+      parameters:
+        - $ref: "#/components/parameters/uuid"
+        - $ref: "#/components/parameters/entityUUID"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: "#/components/schemas/CatalogFieldPutRequest"
+      responses:
+        200:
+          description: Ok
+
+  /catalog/{UUID}/data:
+    get:
+      description: Get catalog data
+      tags:
+        - catalog
+      parameters:
+        - name: UUID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            x-oapi-codegen-extra-tags:
+              validate: "uuid"
+        - name: offset
+          required: false
+          in: query
+          schema:
+            type: integer
+            x-oapi-codegen-extra-tags:
+              validate: "min=0,max=1000"
+        - name: limit
+          required: false
+          in: query
+          schema:
+            type: integer
+            x-oapi-codegen-extra-tags:
+              validate: "min=1,max=200"
+        - name: fields
+          required: false
+          in: query
+          schema:
+            type: string
+            x-oapi-codegen-extra-tags:
+              validate: "trim,min=1,max=500"
+        - name: order
+          required: false
+          in: query
+          schema:
+            type: string
+            x-oapi-codegen-extra-tags:
+              validate: "trim,min=1,max=30"
+        - name: by
+          required: false
+          in: query
+          schema:
+            type: string
+            x-oapi-codegen-extra-tags:
+              validate: "trim,min=3,max=3"
+      responses:
+        200:
+          description: Ok
+          headers:
+            cache-control:
+              schema:
+                type: string
+              description: Cache control
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - items
+                  - count
+                  - total
+                properties:
+                  count:
+                    type: integer
+                  total:
+                    type: integer
+                    format: int64
+                  items:
+                    type: array
+                    items:
+                      type: object
+
+    post:
+      description: Create catalog data
+      tags:
+        - catalog
+      parameters:
+        - $ref: "#/components/parameters/uuid"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - fields
+              properties:
+                fields:
+                  type: object
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - uuid
+                properties:
+                  uuid:
+                    type: string
+                    format: uuid
+
+components:
+  parameters:
+    uuid:
+      name: UUID
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+        x-oapi-codegen-extra-tags:
+          validate: "uuid"
+
+    companyUUID:
+      name: companyUUID
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+        x-oapi-codegen-extra-tags:
+          validate: "uuid"
+
+    userUUID:
+      name: userUUID
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+        x-oapi-codegen-extra-tags:
+          validate: "uuid"
+
+    entityUUID:
+      name: entityUUID
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+        x-oapi-codegen-extra-tags:
+          validate: "uuid"
+
+    fileUUID:
+      name: fileUUID
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+        x-oapi-codegen-extra-tags:
+          validate: "uuid"
+
+    entityName:
+      name: entityName
+      in: path
+      required: true
+      schema:
+        type: string
+        x-oapi-codegen-extra-tags:
+          validate: "trim,name,min=1,max=100"
+
+    projectUUID:
+      name: projectUUID
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+        x-oapi-codegen-extra-tags:
+          validate: "uuid"
+
+  schemas:
+    NameRequest:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          x-oapi-codegen-extra-tags:
+            validate: "trim,name,min=0,max=100"
+
+    NameRequiredRequest:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          x-oapi-codegen-extra-tags:
+            validate: "trim,name,min=1,max=100"
+
+    BadRequest:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          format: int
+        message:
+          type: string
+    About:
+      type: object
+      required:
+        - version
+        - started_at
+        - build_time
+        - uuid
+        - tag
+      properties:
+        version:
+          type: string
+        started_at:
+          type: string
+        uuid:
+          type: string
+        build_time:
+          type: string
+        tag:
+          type: string
+    Health:
+      type: object
+      required:
+        - status
+        - redis
+        - postgres
+      properties:
+        status:
+          type: string
+        redis:
+          type: string
+        postgres:
+          type: string
+    Error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          format: int
+        message:
+          type: string
+    Message:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          type: string
+    ValidationError:
+      type: object
+      required:
+        - code
+        - message
+        - errors
+      properties:
+        code:
+          type: integer
+          format: int
+        errors:
+          type: array
+          items:
+            type: string
+        message:
+          type: string
+
+    # Common
+    UUIDRequest:
+      type: object
+      required:
+        - uuid
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          x-oapi-codegen-extra-tags:
+            validate: "uuid"
+
+    StatusRequest:
+      type: object
+      required:
+        - status
+        - comment
+      properties:
+        status:
+          type: integer
+          x-oapi-codegen-extra-tags:
+            validate: "gte=0,lte=20"
+        comment:
+          type: string
+          x-oapi-codegen-extra-tags:
+            validate: "trim,min=0,max=300"
+
+    UUIDResponse:
+      type: object
+      required:
+        - uuid
+      properties:
+        uuid:
+          format: uuid
+          type: string
+
+    # BankAccountDTO 
+    BankAccountDTO:
+      type: object
+      properties:
+        bik:
+          type: string 
+        name:
+          type: string
+        adress:
+          type: string
+        curAcc:
+          type: string
+        corAcc:
+          type: string
+        currency:
+          type: string
+        comment: 
+          type: string
+    Ans:
+      type: object
+      properties:
+        Corr.acc.:
+          type: integer
+          format: uint
+        Changed:
+          type: boolean
+
+    # Profile
+    ProfileRegisterRequest:
+      type: object
+      required:
+        - name
+        - lname
+        - pname
+        - email
+        - password
+        - phone
+      properties:
+        name:
+          type: string
+          x-oapi-codegen-extra-tags:
+            validate: "trim,name,min=1,max=30"
+        lname:
+          type: string
+          x-oapi-codegen-extra-tags:
+            validate: "trim,name,min=0,max=30"
+        pname:
+          type: string
+          x-oapi-codegen-extra-tags:
+            validate: "trim,name,min=0,max=30"
+        email:
+          type: string
+          x-oapi-codegen-extra-tags:
+            validate: "trim,min=5,max=200"
+        password:
+          type: string
+          x-oapi-codegen-extra-tags:
+            validate: "trim,min=6,max=30"
+        phone:
+          type: integer
+          x-oapi-codegen-extra-tags:
+            validate: "min=10000000000,max=9999999999999"
+
+    ProfileLoginAsRequest:
+      type: object
+      required:
+        - email
+      properties:
+        email:
+          type: string
+          x-oapi-codegen-extra-tags:
+            validate: "trim,min=5,max=200"
+
+    ProfileLoginRequest:
+      type: object
+      required:
+        - email
+        - password
+        - remember_me
+      properties:
+        email:
+          type: string
+          x-oapi-codegen-extra-tags:
+            validate: "trim,min=5,max=200"
+        password:
+          type: string
+          x-oapi-codegen-extra-tags:
+            validate: "trim,min=6,max=30"
+        remember_me:
+          type: boolean
+    ProfileLoginResponse:
+      type: object
+      required:
+        - uuid
+        - access_token
+        - refresh_token
+        - valid_until
+      properties:
+        access_token:
+          type: string
+        uuid:
+          type: string
+          format: uuid
+        refresh_token:
+          type: string
+        valid_until:
+          type: string
+          format: date-time
+    ProfileSentValidateRequest:
+      type: object
+      required:
+        - email
+      properties:
+        email:
+          type: string
+          x-oapi-codegen-extra-tags:
+            validate: "email"
+
+    ProfileValidateRequest:
+      type: object
+      required:
+        - code
+      properties:
+        code:
+          type: string
+          x-oapi-codegen-extra-tags:
+            validate: "trim,min=20,max=20"
+
+    ProfileValidateSimpleRequest:
+      type: object
+      required:
+        - code
+        - email
+      properties:
+        code:
+          type: integer
+          x-oapi-codegen-extra-tags:
+            validate: "gte=100000,max=999999"
+        email:
+          type: string
+          x-oapi-codegen-extra-tags:
+            validate: "email"
+
+    ProfileChangePasswordRequest:
+      type: object
+      required:
+        - new_password
+        - password
+      properties:
+        new_password:
+          type: string
+          x-oapi-codegen-extra-tags:
+            validate: "trim,min=6,max=30"
+        password:
+          type: string
+          x-oapi-codegen-extra-tags:
+            validate: "trim,min=6,max=30"
+
+    ProfileResetSendRequest:
+      type: object
+      required:
+        - email
+      properties:
+        email:
+          type: string
+          x-oapi-codegen-extra-tags:
+            validate: "trim,email"
+
+    ProfileResetRequest:
+      type: object
+      required:
+        - code
+        - password
+      properties:
+        code:
+          type: string
+          x-oapi-codegen-extra-tags:
+            validate: "trim,min=20,max=100"
+        password:
+          type: string
+          x-oapi-codegen-extra-tags:
+            validate: "trim,min=6,max=30"
+
+    FederationCreateRequest:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          x-oapi-codegen-extra-tags:
+            validate: "trim,name,min=3,max=100"
+
+    FederationCreateCompanyRequest:
+      type: object
+      required:
+        - name
+        - federation_uuid
+      properties:
+        name:
+          type: string
+          x-oapi-codegen-extra-tags:
+            validate: "trim,name,min=3,max=100"
+        federation_uuid:
+          type: string
+          format: uuid
+          x-oapi-codegen-extra-tags:
+            validate: "uuid"
+
+    AgentCreateRequest:
+      type: object
+      required:
+        - name
+        - contacts
+      properties:
+        name:
+          type: string
+          x-oapi-codegen-extra-tags:
+            validate: "trim,name,min=3,max=100"
+        contacts:
+          type: array
+          items:
+            type: object
+            required:
+              - type
+              - value
+            properties:
+              type:
+                type: string
+                x-oapi-codegen-extra-tags:
+                  validate: "trim,min=3,max=100"
+              value:
+                type: string
+                x-oapi-codegen-extra-tags:
+                  validate: "trim,min=3,max=100"
+        company_uuid:
+          type: string
+          format: uuid
+          x-oapi-codegen-extra-tags:
+            validate: "omitempty,uuid"
+
+    AgentPatchRequest:
+      type: object
+      required:
+        - name
+        - contacts
+      properties:
+        name:
+          type: string
+          x-oapi-codegen-extra-tags:
+            validate: "trim,name,min=3,max=100"
+        contacts:
+          type: array
+          items:
+            type: object
+            required:
+              - type
+              - value
+            properties:
+              type:
+                type: string
+                x-oapi-codegen-extra-tags:
+                  validate: "trim,min=3,max=100"
+              value:
+                type: string
+                x-oapi-codegen-extra-tags:
+                  validate: "trim,min=3,max=100"
+
+    InviteCreateRequest:
+      type: object
+      required:
+        - email
+      properties:
+        email:
+          type: string
+          x-oapi-codegen-extra-tags:
+            validate: "email"
+        company_uuid:
+          type: string
+          format: uuid
+          x-oapi-codegen-extra-tags:
+            validate: "omitempty,uuid"
+
+    PermissionCreateRequest:
+      type: object
+      required:
+        - uuid
+        - federation_uuid
+        - user_uuid
+        - rules
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          x-oapi-codegen-extra-tags:
+            validate: "uuid"
+        federation_uuid:
+          type: string
+          format: uuid
+          x-oapi-codegen-extra-tags:
+            validate: "uuid"
+        user_uuid:
+          format: uuid
+          type: string
+          x-oapi-codegen-extra-tags:
+            validate: "uuid"
+        rules:
+          type: object
+          $ref: "#/components/schemas/PermissionRulesDTO"
+
+    PermissionRulesDTO:
+      x-go-type: dto.PermissionRulesDTO
+      x-go-type-import:
+        name: PermissionRulesDTO
+        path: github.com/krisch/crm-backend/dto
+      type: object
+
+      properties:
+        federation_create:
+          type: boolean
+          x-oapi-codegen-extra-tags:
+            validate: "bool"
+
+    FederationAddUserRequest:
+      type: object
+      required:
+        - user_uuid
+      properties:
+        user_uuid:
+          type: string
+          format: uuid
+          x-oapi-codegen-extra-tags:
+            validate: "uuid"
+
+    CompanyAddUserRequest:
+      type: object
+      required:
+        - user_uuid
+      properties:
+        user_uuid:
+          type: string
+          format: uuid
+          x-oapi-codegen-extra-tags:
+            validate: "uuid"
+
+    AddGroupRequest:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          x-oapi-codegen-extra-tags:
+            validate: "trim,name,min=3,max=100"
+
+    PatchGroupRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          x-oapi-codegen-extra-tags:
+            validate: "trim,name,min=1,max=100"
+
+    ProjectAddUserRequest:
+      type: object
+      required:
+        - user_uuid
+        - project_uuid
+      properties:
+        user_uuid:
+          type: string
+          format: uuid
+          x-oapi-codegen-extra-tags:
+            validate: "uuid"
+
+    ProjectCreateRequest:
+      type: object
+      required:
+        - name
+        - company_uuid
+        - description
+        - responsible_by
+        - status_sort
+        - fields_sort
+      properties:
+        name:
+          type: string
+          x-oapi-codegen-extra-tags:
+            validate: "trim,min=3,max=100"
+        description:
+          type: string
+          x-oapi-codegen-extra-tags:
+            validate: "trim,max=5000"
+        company_uuid:
+          type: string
+          format: uuid
+          x-oapi-codegen-extra-tags:
+            validate: "uuid"
+        responsible_by:
+          type: string
+          x-oapi-codegen-extra-tags:
+            validate: "omitempty,email"
+        status_sort:
+          type: array
+          items:
+            type: integer
+          x-oapi-codegen-extra-tags:
+            validate: "dive,gte=0,lte=30"
+        fields_sort:
+          type: array
+          items:
+            type: string
+          x-oapi-codegen-extra-tags:
+            validate: "omitempty,dive,min=0,max=30"
+
+    SurveyCreateRequest:
+      type: object
+      required:
+        - name
+        - body
+      properties:
+        name:
+          type: string
+          x-oapi-codegen-extra-tags:
+            validate: "trim,name,min=3,max=100"
+        body:
+          type: object
+
+    CompanyPriorityCreateRequest:
+      type: object
+      required:
+        - name
+        - color
+        - number
+      properties:
+        name:
+          type: string
+          x-oapi-codegen-extra-tags:
+            validate: "trim,name,min=3,max=100"
+        color:
+          type: string
+          x-oapi-codegen-extra-tags:
+            validate: "color"
+        number:
+          type: integer
+          x-oapi-codegen-extra-tags:
+            validate: "gte=10,lte=30"
+
+    ProjectStatusCreateRequest:
+      type: object
+      required:
+        - name
+        - color
+        - number
+        - description
+      properties:
+        name:
+          type: string
+          x-oapi-codegen-extra-tags:
+            validate: "trim,name,min=3,max=100"
+        color:
+          type: string
+          x-oapi-codegen-extra-tags:
+            validate: "color"
+        number:
+          type: integer
+          x-oapi-codegen-extra-tags:
+            validate: "gte=0,lte=30"
+        description:
+          type: string
+          x-oapi-codegen-extra-tags:
+            validate: "trim,max=5000"
+
+    TaskCreateRequest:
+      type: object
+      required:
+        - name
+        - project_uuid
+        - fields
+        - path
+        - tags
+        - description
+        - coworkers_by
+        - implement_by
+        - responsible_by
+        - managed_by
+        - priority
+        - icon
+        - task_entities
+      properties:
+        name:
+          type: string
+          x-oapi-codegen-extra-tags:
+            validate: "trim,name,min=3,max=200"
+        project_uuid:
+          type: string
+          format: uuid
+          x-oapi-codegen-extra-tags:
+            validate: "uuid"
+        fields:
+          type: object
+        path:
+          type: array
+          items:
+            type: string
+          x-oapi-codegen-extra-tags:
+            validate: "dive,uuid"
+        tags:
+          type: array
+          items:
+            type: string
+          x-oapi-codegen-extra-tags:
+            validate: "dive,trim,name,max=40"
+        description:
+          type: string
+          x-oapi-codegen-extra-tags:
+            validate: "trim,max=5000"
+        responsible_by:
+          type: string
+          x-oapi-codegen-extra-tags:
+            validate: "omitempty,email"
+        implement_by:
+          type: string
+          x-oapi-codegen-extra-tags:
+            validate: "omitempty,email"
+        coworkers_by:
+          type: array
+          items:
+            type: string
+          x-oapi-codegen-extra-tags:
+            validate: "dive,email"
+        priority:
+          type: integer
+          x-oapi-codegen-extra-tags:
+            validate: "gte=0,lte=30"
+        managed_by:
+          type: string
+          x-oapi-codegen-extra-tags:
+            validate: "omitempty,email"
+        icon:
+          type: string
+          x-oapi-codegen-extra-tags:
+            validate: "trim,max=50"
+        finish_to:
+          type: string
+          format: date-time
+        task_entities:
+          type: array
+          items:
+            type: object
+            x-go-type: domain.TaskEntity
+            x-go-type-import:
+              path: github.com/krisch/crm-backend/domain
+            required:
+              - uuid
+            properties:
+              uuid:
+                type: string
+                format: uuid
+                x-oapi-codegen-extra-tags:
+                  validate: "uuid"
+              fields:
+                type: array
+                items:
+                  type: string
+                  x-oapi-codegen-extra-tags:
+                    validate: "trim,name,min=1,max=20"
+
+    TaskPutRequest:
+      type: object
+      properties:
+        tags:
+          type: array
+          items:
+            type: string
+          x-oapi-codegen-extra-tags:
+            validate: "dive,trim,name,max=40"
+        description:
+          type: string
+          x-oapi-codegen-extra-tags:
+            validate: "trim,max=5000"
+        priority:
+          type: integer
+          x-oapi-codegen-extra-tags:
+            validate: "gte=0,lte=30"
+        fields:
+          type: object
+        managed_by:
+          type: string
+          x-oapi-codegen-extra-tags:
+            validate: "omitempty,email"
+        icon:
+          type: string
+          x-oapi-codegen-extra-tags:
+            validate: "omitempty,trim,lte=20"
+        finish_to:
+          type: string
+          format: date-time
+
+    CommentCreateRequest:
+      type: object
+      required:
+        - comment
+        - people
+      properties:
+        comment:
+          type: string
+          x-oapi-codegen-extra-tags:
+            validate: "trim,min=1,max=5000"
+        people:
+          type: array
+          items:
+            type: string
+          x-oapi-codegen-extra-tags:
+            validate: "dive,email"
+        reply_uuid:
+          type: string
+          format: uuid
+          x-oapi-codegen-extra-tags:
+            validate: "omitempty,uuid"
+
+    UploadRequest:
+      type: object
+      required:
+        - name
+        - file
+      properties:
+        name:
+          type: string
+          x-oapi-codegen-extra-tags:
+            validate: "trim,name,min=3,max=200"
+        fileName:
+          type: string
+          format: binary
+
+    SearchUserRequest:
+      type: object
+      required:
+        - search
+        - federation_uuid
+      properties:
+        search:
+          type: string
+          x-oapi-codegen-extra-tags:
+            validate: "trim,min=1,max=200"
+        federation_uuid:
+          type: string
+          format: uuid
+          x-oapi-codegen-extra-tags:
+            validate: "uuid"
+        company_uuid:
+          type: string
+          format: uuid
+          nullable: true
+          x-oapi-codegen-extra-tags:
+            validate: "omitempty,uuid"
+
+    CatalogCreateRequest:
+      type: object
+      required:
+        - name
+        - company_uuid
+      properties:
+        name:
+          type: string
+          x-oapi-codegen-extra-tags:
+            validate: "trim,name,min=1,max=200"
+        company_uuid:
+          type: string
+          format: uuid
+          x-oapi-codegen-extra-tags:
+            validate: "uuid"
+
+    CatalogSearchRequest:
+      type: object
+      required:
+        - company_uuid
+      properties:
+        company_uuid:
+          type: string
+          format: uuid
+          x-oapi-codegen-extra-tags:
+            validate: "uuid"
+
+    ProjectFieldCreateRequest:
+      type: object
+      required:
+        - name
+        - data_type
+        - description
+        - required_on_statuses
+        - icon
+      properties:
+        name:
+          type: string
+          x-oapi-codegen-extra-tags:
+            validate: "trim,name,min=1,max=50"
+        data_type:
+          type: integer
+          enum: [0, 1, 2, 3, 4, 5, 6]
+          x-enum-varnames:
+            - integer
+            - float
+            - string
+            - text
+            - bool
+            - switch
+            - array
+          x-go-type: domain.FieldDataType
+          x-go-type-import:
+            path: github.com/krisch/crm-backend/dto
+          x-oapi-codegen-extra-tags:
+            validate: "min=0,max=14"
+        data_uuid:
+          type: string
+          format: uuid
+          x-oapi-codegen-extra-tags:
+            validate: "omitempty,uuid"
+        required_on_statuses:
+          type: array
+          items:
+            type: integer
+          x-oapi-codegen-extra-tags:
+            validate: "omitempty,dive,gte=0,lte=20"
+        icon:
+          type: string
+          x-oapi-codegen-extra-tags:
+            validate: "trim,omitempty,lte=50"
+        description:
+          type: string
+          x-oapi-codegen-extra-tags:
+            validate: "trim,max=5000"
+
+    CatalogFieldCreateRequest:
+      type: object
+      required:
+        - name
+        - data_type
+      properties:
+        name:
+          type: string
+          x-oapi-codegen-extra-tags:
+            validate: "trim,name,min=1,max=50"
+        data_type:
+          type: integer
+          enum: [0, 1, 2, 3, 4, 5, 6, 7, 8]
+          x-enum-varnames:
+            - integer
+            - float
+            - string
+            - text
+            - bool
+            - switch
+            - array
+          x-go-type: domain.FieldDataType
+          x-go-type-import:
+            path: github.com/krisch/crm-backend/dto
+          x-oapi-codegen-extra-tags:
+            validate: "min=0,max=8"
+        data_uuid:
+          type: string
+          format: uuid
+          x-oapi-codegen-extra-tags:
+            validate: "omitempty,uuid"
+
+    CatalogNamedFieldCreateRequest:
+      type: object
+      required:
+        - name
+        - hash
+        - data_type
+      properties:
+        name:
+          type: string
+          x-oapi-codegen-extra-tags:
+            validate: "trim,name,min=1,max=50"
+        hash:
+          type: string
+          pattern: "^[a-z_]{3,20}$"
+          x-oapi-codegen-extra-tags:
+            validate: "trim,name,min=3,max=20"
+        data_type:
+          type: integer
+          enum: [0, 1, 2, 3, 4, 5, 6, 7, 8]
+          x-enum-varnames:
+            - integer
+            - float
+            - string
+            - text
+            - bool
+            - switch
+            - array
+          x-go-type: domain.FieldDataType
+          x-go-type-import:
+            path: github.com/krisch/crm-backend/dto
+          x-oapi-codegen-extra-tags:
+            validate: "min=0,max=8"
+        data_uuid:
+          type: string
+          format: uuid
+          x-oapi-codegen-extra-tags:
+            validate: "omitempty,uuid"
+
+    ProjectFieldPutRequest:
+      type: object
+      required:
+        - name
+        - description
+        - required_on_statuses
+        - icon
+      properties:
+        name:
+          type: string
+          x-oapi-codegen-extra-tags:
+            validate: "trim,name,min=1,max=50"
+        icon:
+          type: string
+          x-oapi-codegen-extra-tags:
+            validate: "trim,max=50"
+        required_on_statuses:
+          type: array
+          items:
+            type: integer
+          x-oapi-codegen-extra-tags:
+            validate: "omitempty,dive,gte=0,lte=20"
+        description:
+          type: string
+          x-oapi-codegen-extra-tags:
+            validate: "trim,max=5000"
+
+    CatalogFieldPutRequest:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          x-oapi-codegen-extra-tags:
+            validate: "trim,name,min=1,max=50"
+
+    UserDTO:
+      x-go-type: dto.UserDTO
+      x-go-type-import:
+        name: UserDTO
+        path: github.com/krisch/crm-backend/dto
+      type: object
+      required:
+        - name
+        - lname
+        - email
+      properties:
+        name:
+          type: string
+        lname:
+          type: string
+        email:
+          type: string
+
+    GroupDTO:
+      x-go-type: dto.GroupDTO
+      x-go-type-import:
+        name: GroupDTO
+        path: github.com/krisch/crm-backend/dto
+      type: object
+      required:
+        - name
+        - created_at
+      properties:
+        name:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+
+    InviteDTO:
+      x-go-type: dto.InviteDTO
+      x-go-type-import:
+        name: InviteDTO
+        path: github.com/krisch/crm-backend/dto
+      type: object
+      required:
+        - uuid
+        - email
+        - created_at
+        - federation
+      properties:
+        uuid:
+          type: string
+        email:
+          type: string
+        created_at:
+          type: string
+        federation:
+          type: object
+          $ref: "#/components/schemas/FederationDTO"
+
+    FederationDTO:
+      x-go-type: dto.FederationDTO
+      x-go-type-import:
+        name: FederationDTO
+        path: github.com/krisch/crm-backend/dto
+      type: object
+      required:
+        - uuid
+        - name
+        - created_at
+        - companies_total
+        - users_total
+        - companies
+        - users
+      properties:
+        uuid:
+          type: string
+        name:
+          type: string
+        created_at:
+          type: string
+        deleted_at:
+          type: string
+        companies_total:
+          type: integer
+        users_total:
+          type: integer
+        companies:
+          type: array
+          items:
+            $ref: "#/components/schemas/CompanyDTO"
+        users:
+          type: array
+          items:
+            $ref: "#/components/schemas/UserDTO"
+
+    FederationDTOs:
+      x-go-type: dto.FederationDTOs
+      x-go-type-import:
+        name: FederationDTOs
+        path: github.com/krisch/crm-backend/dto
+      type: object
+      required:
+        - uuid
+        - name
+        - created_at
+      properties:
+        uuid:
+          type: string
+        name:
+          type: string
+        created_at:
+          type: string
+
+    SmsDTO:
+      x-go-type: dto.SmsDTO
+      x-go-type-import:
+        name: SmsDTO
+        path: github.com/krisch/crm-backend/dto
+      type: object
+
+    CompanyDTO:
+      x-go-type: dto.CompanyDTO
+      x-go-type-import:
+        name: CompanyDTO
+        path: github.com/krisch/crm-backend/dto
+      type: object
+      required:
+        - uuid
+        - name
+      properties:
+        uuid:
+          type: string
+        name:
+          type: string
+        created_at:
+          type: string
+        deleted_at:
+          type: string
+        users_total:
+          type: integer
+        users:
+          type: array
+          items:
+            $ref: "#/components/schemas/UserDTO"
+        projects_total:
+          type: integer
+        projects:
+          type: array
+          items:
+            $ref: "#/components/schemas/ProjectDTOs"
+
+    CompanyDTOs:
+      x-go-type: dto.CompanyDTOs
+      x-go-type-import:
+        name: CompanyDTOs
+        path: github.com/krisch/crm-backend/dto
+      type: object
+      required:
+        - uuid
+        - name
+      properties:
+        uuid:
+          type: string
+        name:
+          type: string
+        created_at:
+          type: string
+
+    ProjectDTO:
+      x-go-type: dto.ProjectDTO
+      x-go-type-import:
+        name: ProjectDTO
+        path: github.com/krisch/crm-backend/dto
+      type: object
+      required:
+        - uuid
+        - name
+        - federation
+        - company
+        - fields
+        - fields_total
+        - status_graph
+      properties:
+        uuid:
+          type: string
+        name:
+          type: string
+        federation:
+          type: object
+          $ref: "#/components/schemas/FederationDTO"
+        company:
+          type: object
+          $ref: "#/components/schemas/CompanyDTO"
+        fields_total:
+          type: integer
+        fields:
+          type: object
+          items:
+            $ref: "#/components/schemas/CompanyFieldDTO"
+        status_graph:
+          type: object
+
+    ProjectDTOs:
+      x-go-type: dto.ProjectDTOs
+      x-go-type-import:
+        name: ProjectDTOs
+        path: github.com/krisch/crm-backend/dto
+      type: object
+      required:
+        - uuid
+        - name
+      properties:
+        uuid:
+          type: string
+        name:
+          type: string
+
+    ProjectOptionsDTO:
+      x-go-type: dto.ProjectOptionsDTO
+      x-go-type-import:
+        name: ProjectOptionsDTO
+        path: github.com/krisch/crm-backend/dto
+      type: object
+      required:
+        - require_cancelation_comment
+        - require_done_comment
+        - status_enable
+      properties:
+        require_cancelation_comment:
+          type: boolean
+          default: false
+        require_done_comment:
+          type: boolean
+          default: false
+        status_enable:
+          type: boolean
+          default: false
+        color:
+          type: string
+          x-oapi-codegen-extra-tags:
+            validate: "color"
+
+    ProjectRequestOptions:
+      type: object
+      properties:
+        require_cancelation_comment:
+          type: boolean
+          default: false
+        require_done_comment:
+          type: boolean
+          default: false
+        status_enable:
+          type: boolean
+          default: false
+        color:
+          type: string
+          x-oapi-codegen-extra-tags:
+            validate: "omitempty,color"
+
+    ProjectRequestParams:
+      type: object
+      properties:
+        status:
+          type: integer
+          default: 0
+          x-oapi-codegen-extra-tags:
+            validate: "omitempty,min=0,max=10"
+        description:
+          type: string
+          x-oapi-codegen-extra-tags:
+            validate: "omitempty,trim,max=5000"
+        responsible_by:
+          type: string
+          x-oapi-codegen-extra-tags:
+            validate: "omitempty,email"
+        status_sort:
+          type: array
+          items:
+            type: integer
+          x-oapi-codegen-extra-tags:
+            validate: "omitempty,dive,gte=0,lte=30"
+        fields_sort:
+          type: array
+          items:
+            type: string
+          x-oapi-codegen-extra-tags:
+            validate: "omitempty,dive,min=0,max=30"
+
+    CompanyFieldDTO:
+      x-go-type: dto.CompanyFieldDTO
+      x-go-type-import:
+        name: UserDTO
+        path: github.com/krisch/crm-backend/dto
+      type: object
+      required:
+        - name
+        - uuid
+        - type
+      properties:
+        uuid:
+          type: string
+        name:
+          type: string
+        type:
+          type: string
+
+    ProjectCatalogDataDTO:
+      x-go-type: dto.ProjectCatalogDataDTO
+      x-go-type-import:
+        name: ProjectCatalogDataDTO
+        path: github.com/krisch/crm-backend/dto
+      type: object
+      required:
+        - uuid
+        - name
+        - value
+        - created_at
+        - updated_at
+      properties:
+        uuid:
+          type: string
+        name:
+          type: string
+        value:
+          type: string
+        created_at:
+          type: string
+        updated_at:
+          type: string
+
+    AgentDTO:
+      x-go-type: dto.AgentDTO
+      x-go-type-import:
+        name: AgentDTO
+        path: github.com/krisch/crm-backend/dto
+      type: object
+      required:
+        - uuid
+        - name
+      properties:
+        uuid:
+          type: string
+        name:
+          type: string
+
+    CatalogFieldDTO:
+      x-go-type: dto.CatalogFieldDTO
+      x-go-type-import:
+        name: UserDTO
+        path: github.com/krisch/crm-backend/dto
+      type: object
+      required:
+        - name
+        - uuid
+        - type
+        - hash
+        - data_type
+        - data_desc
+      properties:
+        uuid:
+          type: string
+        name:
+          type: string
+        type:
+          type: string
+        hash:
+          type: string
+        data_type:
+          type: string
+        data_catalog_uuid:
+          type: string
+        data_desc:
+          type: string
+
+    CatalogDTO:
+      x-go-type: dto.CatalogDTO
+      x-go-type-import:
+        name: CatalogDTO
+        path: github.com/krisch/crm-backend/dto
+      type: object
+      required:
+        - uuid
+        - name
+        - created_at
+        - updated_at
+      properties:
+        uuid:
+          type: string
+        name:
+          type: string
+        created_at:
+          type: string
+        updated_at:
+          type: string
+
+    UploadDTO:
+      x-go-type: dto.UploadDTO
+      x-go-type-import:
+        name: UploadDTO
+        path: github.com/krisch/crm-backend/dto
+      type: object
+      required:
+        - uuid
+        - name
+        - ext
+        - size
+        - url
+      properties:
+        uuid:
+          type: string
+        name:
+          type: string
+        ext:
+          type: string
+        size:
+          type: integer
+        url:
+          type: string
+
+    CompanyPriorityDTO:
+      x-go-type: dto.CompanyPriorityDTO
+      x-go-type-import:
+        name: CompanyPriorityDTO
+        path: github.com/krisch/crm-backend/dto
+      type: object
+      required:
+        - uuid
+        - name
+        - color
+        - number
+      properties:
+        uuid:
+          type: string
+        name:
+          type: string
+        number:
+          type: integer
+          x-oapi-codegen-extra-tags:
+            validate: "gte=10,lte=30"
+        color:
+          type: string
+          x-oapi-codegen-extra-tags:
+            validate: "color"
+
+    ActivityDTO:
+      x-go-type: dto.ActivityDTO
+      x-go-type-import:
+        name: ActivityDTO
+        path: github.com/krisch/crm-backend/dto
+      type: object
+
+    ProjectStatusDTO:
+      x-go-type: dto.ProjectStatusDTO
+      x-go-type-import:
+        name: ProjectStatusDTO
+        path: github.com/krisch/crm-backend/dto
+      type: object
+      required:
+        - uuid
+        - name
+        - color
+        - number
+        - description
+      properties:
+        uuid:
+          type: string
+        name:
+          type: string
+        number:
+          type: integer
+          x-oapi-codegen-extra-tags:
+            validate: "gte=0,lte=30"
+        color:
+          type: string
+          x-oapi-codegen-extra-tags:
+            validate: "color"
+        description:
+          type: string
+
+    ProfilePhotoDTO:
+      x-go-type: dto.ProfilePhotoDTO
+      x-go-type-import:
+        name: ProfilePhotoDTOSurveyDTO
+        path: github.com/krisch/crm-backend/dto
+      type: object
+
+    SurveyDTO:
+      x-go-type: dto.SurveyDTO
+      x-go-type-import:
+        name: SurveyDTO
+        path: github.com/krisch/crm-backend/dto
+      type: object
+
+    ProfileDTO:
+      x-go-type: dto.ProfileDTO
+      x-go-type-import:
+        name: ProfileDTO
+        path: github.com/krisch/crm-backend/dto
+      type: object
+      required:
+        - uuid
+        - name
+        - lname
+        - pname
+        - phone
+        - email
+        - is_valid
+        - federations
+        - companies
+        - notifications_total
+      properties:
+        uuid:
+          type: string
+        name:
+          type: string
+        lname:
+          type: string
+        pname:
+          type: string
+        email:
+          type: string
+        phone:
+          type: integer
+        is_valid:
+          type: boolean
+        photo:
+          type: object
+          $ref: "#/components/schemas/ProfilePhotoDTO"
+        federations:
+          type: array
+          items:
+            $ref: "#/components/schemas/FederationDTOs"
+        companies:
+          type: array
+          items:
+            $ref: "#/components/schemas/CompanyDTOs"
+        projects:
+          type: array
+          items:
+            $ref: "#/components/schemas/ProjectDTOs"
+        notifications_total:
+          type: integer
+
+    TaskDTO:
+      x-go-type: dto.TaskDTO
+      x-go-type-import:
+        name: UploadDTO
+        path: github.com/krisch/crm-backend/dto
+      type: object
+      required:
+        - uuid
+        - name
+        - id
+        - created_at
+        - updated_at
+        - created_by
+        - responsible_by
+      properties:
+        uuid:
+          type: string
+        name:
+          type: string
+        id:
+          type: integer
+          format: int
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        created_by:
+          $ref: "#/components/schemas/UserDTO"
+        responsible_by:
+          $ref: "#/components/schemas/UserDTO"
+
+    TaskDTOs:
+      x-go-type: dto.TaskDTOs
+      x-go-type-import:
+        name: TaskDTOs
+        path: github.com/krisch/crm-backend/dto
+      type: object
+      required:
+        - uuid
+        - name
+        - id
+        - created_at
+        - updated_at
+        - created_by
+        - responsible_by
+      properties:
+        uuid:
+          type: string
+        name:
+          type: string
+        id:
+          type: integer
+          format: int
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        created_by:
+          $ref: "#/components/schemas/UserDTO"
+        responsible_by:
+          $ref: "#/components/schemas/UserDTO"
+
+    CatalogDataDTO:
+      x-go-type: dto.CatalogDataDTO
+      x-go-type-import:
+        name: CatalogDataDTO
+        path: github.com/krisch/crm-backend/dto
+      type: object
+      required:
+        - uuid
+        - created_at
+        - updated_at
+      properties:
+        uuid:
+          type: string
+        name:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    TagDTO:
+      x-go-type: dto.TagDTO
+      x-go-type-import:
+        name: TagDTO
+        path: github.com/krisch/crm-backend/dto
+      type: object
+      required:
+        - uuid
+        - name
+        - company_uuid
+        - created_at
+      properties:
+        uuid:
+          type: string
+        name:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+
+    NotificationDTO:
+      x-go-type: dto.NotificationDTO
+      x-go-type-import:
+        name: NotificationDTO
+        path: github.com/krisch/crm-backend/dto
+      type: object
+      required:
+        - uuid
+        - name
+      properties:
+        uuid:
+          type: string
+        name:
+          type: string
+
+    NotificationTaskDTO:
+      x-go-type: dto.NotificationTaskDTO
+      x-go-type-import:
+        name: NotificationTaskDTO
+        path: github.com/krisch/crm-backend/dto
+      type: object
+      required:
+        - uuid
+        - name
+        - score
+      properties:
+        uuid:
+          type: string
+        name:
+          type: string
+        score:
+          type: integer
+
+    NotificationReminderDTO:
+      x-go-type: dto.NotificationReminderDTO
+      x-go-type-import:
+        name: NotificationReminderDTO
+        path: github.com/krisch/crm-backend/dto
+      type: object
+      required:
+        - uuid
+        - name
+        - score
+      properties:
+        uuid:
+          type: string
+        name:
+          type: string
+        score:
+          type: integer
+
+    CommentDTO:
+      x-go-type: dto.CommentDTO
+      x-go-type-import:
+        name: CommentDTO
+        path: github.com/krisch/crm-backend/dto
+      type: object
+      required:
+        - uuid
+        - comment
+        - people
+        - created_at
+        - updated_at
+        - created_by
+        - likes
+      properties:
+        uuid:
+          type: string
+        comment:
+          type: string
+        people:
+          type: array
+          items:
+            $ref: "#/components/schemas/UserDTO"
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        created_by:
+          $ref: "#/components/schemas/UserDTO"
+        likes:
+          $ref: "#/components/schemas/UserDTO"
+
+    ReminderDTO:
+      x-go-type: dto.ReminderDTO
+      x-go-type-import:
+        name: ReminderDTO
+        path: github.com/krisch/crm-backend/dto
+      type: object
+      required:
+        - uuid
+        - description
+        - date_to
+        - date_from
+        - task_uuid
+        - created_at
+        - updated_at
+        - status
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        description:
+          type: string
+        date_to:
+          type: string
+          format: date-time
+        date_from:
+          type: string
+          format: date-time
+        task_uuid:
+          type: string
+          format: uuid
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    ReminderCreateRequest:
+      type: object
+      required:
+        - task_uuid
+        - description
+        - type
+      properties:
+        task_uuid:
+          type: string
+          format: uuid
+          x-oapi-codegen-extra-tags:
+            validate: "uuid"
+        description:
+          type: string
+          x-oapi-codegen-extra-tags:
+            validate: "trim,name,min=0,max=2000"
+        type:
+          type: string
+          x-oapi-codegen-extra-tags:
+            validate: "trim,name,min=0,max=50"
+        date_to:
+          type: string
+          format: date-time
+        date_from:
+          type: string
+          format: date-time
+        user_uuid:
+          type: string
+          format: uuid
+
+    ReminderPutRequest:
+      type: object
+      required:
+        - description
+        - comment
+        - type
+      properties:
+        description:
+          type: string
+          x-oapi-codegen-extra-tags:
+            validate: "trim,name,min=0,max=2000"
+        type:
+          type: string
+          x-oapi-codegen-extra-tags:
+            validate: "trim,name,min=0,max=50"
+        comment:
+          type: string
+          x-oapi-codegen-extra-tags:
+            validate: "trim,min=0,max=5000"
+        date_to:
+          type: string
+          format: date-time
+        date_from:
+          type: string
+          format: date-time
+        user_uuid:
+          type: string
+          format: uuid
+
+    TagCreateRequest:
+      type: object
+      required:
+        - name
+        - company_uuid
+        - color
+      properties:
+        name:
+          type: string
+          x-oapi-codegen-extra-tags:
+            validate: "trim,name,min=1,max=100"
+        company_uuid:
+          type: string
+          format: uuid
+          x-oapi-codegen-extra-tags:
+            validate: "uuid"
+        color:
+          type: string
+          x-oapi-codegen-extra-tags:
+            validate: "color"
+
+    GetUserEmailsParams:
+      type: object
+      required:
+        - uuid
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          x-oapi-codegen-extra-tags:
+            validate: "required,uuid"
+        limit:
+          type: integer
+          format: int32
+          default: 50
+          x-oapi-codegen-extra-tags:
+            validate: "omitempty,min=1,max=1000"
+        offset:
+          type: integer
+          format: int32
+          default: 0
+          x-oapi-codegen-extra-tags:
+            validate: "omitempty,min=0"
+
+
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+security:
+  - BearerAuth: []

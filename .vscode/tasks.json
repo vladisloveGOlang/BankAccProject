@@ -1,0 +1,61 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "testify",
+            "type": "shell",
+            "command": "make",
+            "args": [
+                "testify",
+                "FILTER=${input:testName}",
+            ],
+            "presentation": {
+                "reveal": "always"
+            },
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "migrate new",
+            "type": "shell",
+            "command": "make",
+            "args": [
+                "migrate-new",
+                "NAME=${input:migrationName}",
+            ],
+            "presentation": {
+                "reveal": "always"
+            },
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+    ],
+    "inputs": [
+        {
+            "id": "testName",
+            "type": "command",
+            "command": "extension.commandvariable.promptStringRemember",
+            "args": {
+                "key": "testName",
+                "description": "Enter a test name (health, profile...)"
+            }
+        },
+        {
+            "id": "migrationName",
+            "type": "command",
+            "command": "extension.commandvariable.promptStringRemember",
+            "args": {
+                "key": "migrationName",
+                "description": "Enter a migration name (taks, task.alter, task.drop...)"
+            }
+        },
+    ]
+}

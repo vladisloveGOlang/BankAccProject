@@ -1,0 +1,3749 @@
+{
+	"info": {
+		"_postman_id": "4558ed7d-ea19-4483-b0a7-f25f5849da5a",
+		"name": "RT",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "31525002",
+		"_collection_link": "https://restless-crater-763594.postman.co/workspace/My-Workspace~b621cba5-5bcb-4cfb-83fd-cc9340316044/collection/31525002-4558ed7d-ea19-4483-b0a7-f25f5849da5a?action=share&source=collection_link&creator=31525002"
+	},
+	"item": [
+		{
+			"name": "profile",
+			"item": [
+				{
+					"name": "invite",
+					"item": [
+						{
+							"name": "/profile/invite",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Response time is less than 200ms\", function () {",
+											"    minimum = parseInt(pm.environment.get(\"minimumResponseTime\"))",
+											"    pm.expect(pm.response.responseTime).to.be.below(minimum);",
+											"});",
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"var jsonData = pm.response.json()",
+											"",
+											"if (jsonData.items.length > 0) {",
+											"pm.environment.set(\"inviteLastUUID\", jsonData.items[0].uuid);",
+											"}"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{domain}}/profile/invite",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"profile",
+										"invite"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/profile/invite/{uuid}/accept",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Response time is less than 200ms\", function () {",
+											"    minimum = parseInt(pm.environment.get(\"minimumResponseTime\"))",
+											"    pm.expect(pm.response.responseTime).to.be.below(minimum);",
+											"});",
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"url": {
+									"raw": "{{domain}}/profile/invite/{{inviteLastUUID}}/accept",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"profile",
+										"invite",
+										"{{inviteLastUUID}}",
+										"accept"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/profile/invite/{uuid}/decline",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Response time is less than 200ms\", function () {",
+											"    minimum = parseInt(pm.environment.get(\"minimumResponseTime\"))",
+											"    pm.expect(pm.response.responseTime).to.be.below(minimum);",
+											"});",
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"url": {
+									"raw": "{{domain}}/profile/invite/{{inviteLastUUID}}/decline",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"profile",
+										"invite",
+										"{{inviteLastUUID}}",
+										"decline"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "reminder",
+					"item": [
+						{
+							"name": "reminder",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Response time is less than 200ms\", function () {",
+											"    minimum = parseInt(pm.environment.get(\"minimumResponseTime\"))",
+											"    pm.expect(pm.response.responseTime).to.be.below(minimum);",
+											"});",
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"var jsonData = pm.response.json()",
+											"",
+											"pm.test(\"Json uuid is not empty\", function () { ",
+											"    pm.expect(jsonData.uuid).to.be.not.empty;",
+											"});",
+											"",
+											"pm.environment.set(\"reminderLastUUID\", jsonData.uuid);",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"task_uuid\": \"{{taskLastUUID}}\",\n    \"description\": \"reminder {{$timestamp}}\",\n    \"date\" : \"2006-01-02T15:04:05+03:00\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{domain}}/reminder",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"reminder"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "reminder",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Response time is less than 200ms\", function () {",
+											"    minimum = parseInt(pm.environment.get(\"minimumResponseTime\"))",
+											"    pm.expect(pm.response.responseTime).to.be.below(minimum);",
+											"});",
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"var jsonData = pm.response.json()",
+											" ",
+											"if (jsonData.items.length > 0) {",
+											"    pm.environment.set(\"reminderLastUUID\", jsonData.items[0].uuid);",
+											"}",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{domain}}/reminder",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"reminder"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "reminder",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Response time is less than 200ms\", function () {",
+											"    minimum = parseInt(pm.environment.get(\"minimumResponseTime\"))",
+											"    pm.expect(pm.response.responseTime).to.be.below(minimum);",
+											"});",
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{ \n    \"description\": \"updated {{$timestamp}}\",\n    \"date\" : \"2006-01-02T05:05:05+03:00\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{domain}}/reminder/{{reminderLastUUID}}",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"reminder",
+										"{{reminderLastUUID}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "reminder",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Response time is less than 200ms\", function () {",
+											"    minimum = parseInt(pm.environment.get(\"minimumResponseTime\"))",
+											"    pm.expect(pm.response.responseTime).to.be.below(minimum);",
+											"});",
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{domain}}/reminder/{{reminderLastUUID}}",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"reminder",
+										"{{reminderLastUUID}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "/profile",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"    minimum = parseInt(pm.environment.get(\"minimumResponseTime\"))",
+									"    pm.expect(pm.response.responseTime).to.be.below(minimum);",
+									"});",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var jsonData = pm.response.json()",
+									"",
+									"pm.test(\"Json uuid is not empty\", function () { ",
+									"    pm.expect(jsonData.uuid).to.be.not.empty;",
+									"});",
+									" ",
+									"pm.environment.set(\"usersLastUUID\", jsonData.uuid);",
+									" "
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\" : \"song\",\n    \"lname\" : \"bird\",\n    \"pname\" : \"night\",\n    \"email\" : \"nightsong@oviovi.site\",\n    \"password\" : \"secret\",\n    \"phone\" : 79031112233\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{domain}}/profile",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/profile (int)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let int = pm.environment.get(\"int\") ?? 0",
+									"if (int > 3) {",
+									"    int = 0",
+									"}",
+									"pm.environment.set(\"int\", int + 1);",
+									"",
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"    minimum = parseInt(pm.environment.get(\"minimumResponseTime\"))",
+									"    pm.expect(pm.response.responseTime).to.be.below(minimum);",
+									"});",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var jsonData = pm.response.json()",
+									"",
+									"pm.test(\"Json uuid is not empty\", function () { ",
+									"    pm.expect(jsonData.uuid).to.be.not.empty;",
+									"});",
+									" ",
+									"pm.environment.set(\"usersLastUUID\", jsonData.uuid);",
+									" "
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\" : \"song\",\n    \"lname\" : \"bird\",\n    \"pname\" : \"night\",\n    \"email\" : \"nightsong-1@oviovi.site\",\n    \"password\" : \"secret\",\n    \"phone\" : 79031112233\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{domain}}/profile",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/profile/login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"    minimum = parseInt(pm.environment.get(\"minimumResponseTime\"))",
+									"    pm.expect(pm.response.responseTime).to.be.below(minimum);",
+									"});",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var jsonData = pm.response.json()",
+									"",
+									"pm.test(\"Json access_token is not empty\", function () { ",
+									"    pm.expect(jsonData.access_token).to.be.not.empty;",
+									"});",
+									"",
+									"pm.environment.set(\"access_token\", jsonData.access_token); ",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableCookies": false,
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\" : \"nightsong@oviovi.site\",\n    \"password\" : \"secret\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{domain}}/profile/login",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"profile",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/profile/login (int)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"    minimum = parseInt(pm.environment.get(\"minimumResponseTime\"))",
+									"    pm.expect(pm.response.responseTime).to.be.below(minimum);",
+									"});",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var jsonData = pm.response.json()",
+									"",
+									"pm.test(\"Json access_token is not empty\", function () { ",
+									"    pm.expect(jsonData.access_token).to.be.not.empty;",
+									"});",
+									"",
+									"pm.environment.set(\"access_token\", jsonData.access_token); ",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableCookies": false,
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\" : \"nightsong-1@oviovi.site\",\n    \"password\" : \"secret\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{domain}}/profile/login",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"profile",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/profile",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"    minimum = parseInt(pm.environment.get(\"minimumResponseTime\"))",
+									"    pm.expect(pm.response.responseTime).to.be.below(minimum);",
+									"});",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									" ",
+									"var jd = pm.response.json()",
+									"",
+									"pm.test(\"Json email is not empty\", function () { ",
+									"    pm.expect(jd.email).to.be.not.empty;",
+									"});",
+									"",
+									"pm.test(\"Json name is not empty\", function () { ",
+									"    pm.expect(jd.name).to.be.not.empty;",
+									"});",
+									" ",
+									"pm.environment.set(\"usersLastUUID\", jd.uuid);",
+									"",
+									"var jsonData = pm.response.json()",
+									" ",
+									"if (jsonData.companies.length > 0) {",
+									"    let ln = jsonData.companies.length - 1",
+									"pm.environment.set(\"federationLastUUID\", jsonData.companies[ln].federation_uuid);",
+									"",
+									"",
+									"pm.environment.set(\"companyLastUUID\", jsonData.companies[0].uuid);",
+									"",
+									"}",
+									"",
+									"if (jsonData.projects.length > 0) {",
+									"    ",
+									"    pm.environment.set(\"projectLastUUID\", jsonData.projects[0].uuid);",
+									"",
+									"    pm.environment.set(\"federationLastUUID\", jsonData.projects[0].federation_uuid);",
+									"",
+									" pm.environment.set(\"companyLastUUID\", jsonData.projects[0].company_uuid);",
+									"",
+									" }"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{domain}}/profile",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/profile/notifications",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"    minimum = parseInt(pm.environment.get(\"minimumResponseTime\"))",
+									"    pm.expect(pm.response.responseTime).to.be.below(minimum);",
+									"});",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									" ",
+									"var jd = pm.response.json()",
+									"",
+									"pm.test(\"Json email is not empty\", function () { ",
+									"    pm.expect(jd.email).to.be.not.empty;",
+									"});",
+									"",
+									"pm.test(\"Json name is not empty\", function () { ",
+									"    pm.expect(jd.name).to.be.not.empty;",
+									"});",
+									"",
+									"pm.test(\"Json federations is not empty\", function () { ",
+									"    pm.expect(jd.federations).to.be.not.empty;",
+									"});",
+									"",
+									"pm.test(\"Json federations is not empty\", function () { ",
+									"    pm.expect(jd.federations).to.be.an(\"array\");",
+									"});",
+									"",
+									"pm.test(\"Json companies is not empty\", function () { ",
+									"    pm.expect(jd.companies).to.be.not.empty;",
+									"});",
+									"",
+									"pm.test(\"Json companies is not empty\", function () { ",
+									"    pm.expect(jd.companies).to.be.an(\"array\");",
+									"});",
+									"",
+									"pm.environment.set(\"usersLastUUID\", jd.uuid);",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{domain}}/profile/notifications",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"profile",
+								"notifications"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/profile/sent_validation",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"minimum = parseInt(pm.environment.get(\"minimumLongResponseTime\"))",
+									"",
+									"pm.test(`Response time is less than ${{minimum}} ms`, function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(minimum);",
+									"});",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Hint is present\", function () {",
+									"    pm.response.to.have.header(\"Hint\");",
+									"",
+									"    hint = pm.response.headers.get(\"Hint\")",
+									"    pm.environment.set(\"userValidationCode\", hint);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\" : \"nightsong@oviovi.site\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{domain}}/profile/validate/send",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"profile",
+								"validate",
+								"send"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/profile/validate",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"    minimum = parseInt(pm.environment.get(\"minimumResponseTime\"))",
+									"    pm.expect(pm.response.responseTime).to.be.below(minimum);",
+									"});",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"code\" : \"{{userValidationCode}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{domain}}/profile/validate",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"profile",
+								"validate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/profile/change_password",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"    minimum = parseInt(pm.environment.get(\"minimumResponseTime\"))",
+									"    pm.expect(pm.response.responseTime).to.be.below(minimum);",
+									"});",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableCookies": false
+					},
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"password\" : \"secret\",\n    \"new_password\" : \"secret\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{domain}}/profile/password",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"profile",
+								"password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/profile/color",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"    minimum = parseInt(pm.environment.get(\"minimumResponseTime\"))",
+									"    pm.expect(pm.response.responseTime).to.be.below(minimum);",
+									"});",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableCookies": false
+					},
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"color\" : \"#101010\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{domain}}/profile/color",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"profile",
+								"color"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/profile/photo",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"    minimum = parseInt(pm.environment.get(\"minimumLongResponseTime\"))",
+									"    pm.expect(pm.response.responseTime).to.be.below(minimum);",
+									"});",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableCookies": false
+					},
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/Users/devlet/Documents/RT/testify/assets/gif-1.gif"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{domain}}/profile/photo",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"profile",
+								"photo"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/profile/photo",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"    minimum = parseInt(pm.environment.get(\"minimumLongResponseTime\"))",
+									"    pm.expect(pm.response.responseTime).to.be.below(minimum);",
+									"});",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableCookies": false
+					},
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/Users/devlet/Downloads/girls.jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{domain}}/profile/photo",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"profile",
+								"photo"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/profile/notification(s)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"    minimum = parseInt(pm.environment.get(\"minimumLongResponseTime\"))",
+									"    pm.expect(pm.response.responseTime).to.be.below(minimum);",
+									"});",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableCookies": false
+					},
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/Users/devlet/Downloads/girls.jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{domain}}/profile/notifications",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"profile",
+								"notifications"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/profile",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"    minimum = parseInt(pm.environment.get(\"minimumResponseTime\"))",
+									"    pm.expect(pm.response.responseTime).to.be.below(minimum);",
+									"});",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{domain}}/profile",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"profile"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "federation",
+			"item": [
+				{
+					"name": "invite",
+					"item": [
+						{
+							"name": "federation/{uuid}/invite (int)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"let int = pm.environment.get(\"int\") ?? 0",
+											"if (int > 3) {",
+											"    int = 0",
+											"}",
+											"pm.environment.set(\"int\", int + 1);",
+											" ",
+											"pm.test(\"Response time is less than 200ms\", function () {",
+											"    minimum = parseInt(pm.environment.get(\"minimumResponseTime\"))",
+											"    pm.expect(pm.response.responseTime).to.be.below(minimum);",
+											"});",
+											"",
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\" : \"nightsong-{{int}}@oviovi.site\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{domain}}/federation/{{federationLastUUID}}/invite",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"federation",
+										"{{federationLastUUID}}",
+										"invite"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "federation/{uuid}/invite",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Response time is less than 200ms\", function () {",
+											"    minimum = parseInt(pm.environment.get(\"minimumResponseTime\"))",
+											"    pm.expect(pm.response.responseTime).to.be.below(minimum);",
+											"});",
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"var jsonData = pm.response.json()",
+											"",
+											"if (jsonData.items.length > 0) {",
+											"    pm.environment.set(\"inviteLastUUID\", jsonData.items[0].uuid);",
+											"}"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{domain}}/federation/{{federationLastUUID}}/invite",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"federation",
+										"{{federationLastUUID}}",
+										"invite"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "federation/{uuid}/invite/{uuid}",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Response time is less than 200ms\", function () {",
+											"    minimum = parseInt(pm.environment.get(\"minimumResponseTime\"))",
+											"    pm.expect(pm.response.responseTime).to.be.below(minimum);",
+											"});",
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{domain}}/federation/{{federationLastUUID}}/invite/{{inviteLastUUID}}",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"federation",
+										"{{federationLastUUID}}",
+										"invite",
+										"{{inviteLastUUID}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "federation",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"    minimum = parseInt(pm.environment.get(\"minimumResponseTime\"))",
+									"    pm.expect(pm.response.responseTime).to.be.below(minimum);",
+									"});",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var jsonData = pm.response.json()",
+									"",
+									"pm.test(\"Json uuid is not empty\", function () { ",
+									"    pm.expect(jsonData.uuid).to.be.not.empty;",
+									"});",
+									"",
+									"pm.environment.set(\"federationLastUUID\", jsonData.uuid);",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"my federation ({{$timestamp}})\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{domain}}/federation",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"federation"
+							]
+						},
+						"description": "If you create your first federation you will add yourself to the **federations's users** automaticly."
+					},
+					"response": []
+				},
+				{
+					"name": "federation/{uuid}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"    minimum = parseInt(pm.environment.get(\"minimumResponseTime\"))",
+									"    pm.expect(pm.response.responseTime).to.be.below(minimum);",
+									"});",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var jsonData = pm.response.json()",
+									"",
+									"pm.test(\"Json uuid is not empty\", function () { ",
+									"    pm.expect(jsonData.uuid).to.be.not.empty;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"my federation\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{domain}}/federation/{{federationLastUUID}}",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"federation",
+								"{{federationLastUUID}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "federation/{uuid}/name",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"    minimum = parseInt(pm.environment.get(\"minimumResponseTime\"))",
+									"    pm.expect(pm.response.responseTime).to.be.below(minimum);",
+									"});",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"updaed  name at {{$timestamp}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{domain}}/federation/{{federationLastUUID}}/name",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"federation",
+								"{{federationLastUUID}}",
+								"name"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "federation/{uuid}/user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"    minimum = parseInt(pm.environment.get(\"minimumResponseTime\"))",
+									"    pm.expect(pm.response.responseTime).to.be.below(minimum);",
+									"});",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"user_uuid\" : \"{{usersLastUUID}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{domain}}/federation/{{federationLastUUID}}/user",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"federation",
+								"{{federationLastUUID}}",
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "federation/{uuid}/user/{uuid}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"    minimum = parseInt(pm.environment.get(\"minimumResponseTime\"))",
+									"    pm.expect(pm.response.responseTime).to.be.below(minimum);",
+									"});",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"federation_uuid\": \"{{federationLastUUID}}\",\n    \"user_uuid\" : \"{{usersLastUUID}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{domain}}/federation/{{federationLastUUID}}/user/{{usersLastUUID}}",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"federation",
+								"{{federationLastUUID}}",
+								"user",
+								"{{usersLastUUID}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "federation/{uuid}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"    minimum = parseInt(pm.environment.get(\"minimumResponseTime\"))",
+									"    pm.expect(pm.response.responseTime).to.be.below(minimum);",
+									"});",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"my federation\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{domain}}/federation/{{federationLastUUID}}",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"federation",
+								"{{federationLastUUID}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "company",
+			"item": [
+				{
+					"name": "company",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"    minimum = parseInt(pm.environment.get(\"minimumResponseTime\"))",
+									"    pm.expect(pm.response.responseTime).to.be.below(minimum);",
+									"});",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var jsonData = pm.response.json()",
+									"",
+									"pm.test(\"Json uuid is not empty\", function () { ",
+									"    pm.expect(jsonData.uuid).to.be.not.empty;",
+									"});",
+									"",
+									"pm.environment.set(\"companyLastUUID\", jsonData.uuid);",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"my company ({{$timestamp}})\",\n    \"federation_uuid\" : \"{{federationLastUUID}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{domain}}/company",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"company"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "company/{uuid}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"    minimum = parseInt(pm.environment.get(\"minimumResponseTime\"))",
+									"    pm.expect(pm.response.responseTime).to.be.below(minimum);",
+									"});",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{domain}}/company/{{companyLastUUID}}",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"company",
+								"{{companyLastUUID}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "company/{uuid}/name",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"    minimum = parseInt(pm.environment.get(\"minimumResponseTime\"))",
+									"    pm.expect(pm.response.responseTime).to.be.below(minimum);",
+									"});",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"updaed company name at {{$timestamp}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{domain}}/company/{{companyLastUUID}}/name",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"company",
+								"{{companyLastUUID}}",
+								"name"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "company/{uuid}/user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"    minimum = parseInt(pm.environment.get(\"minimumResponseTime\"))",
+									"    pm.expect(pm.response.responseTime).to.be.below(minimum);",
+									"});",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"user_uuid\" : \"{{usersLastUUID}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{domain}}/company/{{companyLastUUID}}/user",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"company",
+								"{{companyLastUUID}}",
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "company/{uuid}/user/{uuid}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"    minimum = parseInt(pm.environment.get(\"minimumResponseTime\"))",
+									"    pm.expect(pm.response.responseTime).to.be.below(minimum);",
+									"});",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"federation_uuid\": \"{{federationLastUUID}}\",\n    \"user_uuid\" : \"{{usersLastUUID}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{domain}}/company/{{companyLastUUID}}/user/{{usersLastUUID}}",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"company",
+								"{{companyLastUUID}}",
+								"user",
+								"{{usersLastUUID}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "company/{uuid}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"    minimum = parseInt(pm.environment.get(\"minimumResponseTime\"))",
+									"    pm.expect(pm.response.responseTime).to.be.below(minimum);",
+									"});",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{domain}}/company/{{companyLastUUID}}",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"company",
+								"{{companyLastUUID}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "project",
+			"item": [
+				{
+					"name": "project",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"    minimum = parseInt(pm.environment.get(\"minimumResponseTime\"))",
+									"    pm.expect(pm.response.responseTime).to.be.below(minimum);",
+									"});",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var jsonData = pm.response.json()",
+									"",
+									"pm.test(\"Json uuid is not empty\", function () { ",
+									"    pm.expect(jsonData.uuid).to.be.not.empty;",
+									"});",
+									"",
+									"pm.environment.set(\"projectLastUUID\", jsonData.uuid);",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\" : \"my project ({{$timestamp}})\",\n    \"company_uuid\" : \"{{companyLastUUID}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{domain}}/project",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"project"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "project/{uuid}/name",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"    minimum = parseInt(pm.environment.get(\"minimumResponseTime\"))",
+									"    pm.expect(pm.response.responseTime).to.be.below(minimum);",
+									"});",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\" : \"my project ({{$timestamp}})\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{domain}}/project/{{projectLastUUID}}/name",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"project",
+								"{{projectLastUUID}}",
+								"name"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "project/{uuid}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"    minimum = parseInt(pm.environment.get(\"minimumResponseTime\"))",
+									"    pm.expect(pm.response.responseTime).to.be.below(minimum);",
+									"});",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var jsonData = pm.response.json()",
+									"",
+									"pm.test(\"Json uuid is not empty\", function () { ",
+									"    pm.expect(jsonData.uuid).to.be.not.empty;",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{domain}}/project/{{projectLastUUID}}",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"project",
+								"{{projectLastUUID}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "project/{uuid}/fields (1)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"    minimum = parseInt(pm.environment.get(\"minimumResponseTime\"))",
+									"    pm.expect(pm.response.responseTime).to.be.below(minimum);",
+									"});",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var jsonData = pm.response.json()",
+									"",
+									"pm.test(\"Json uuid is not empty\", function () { ",
+									"    pm.expect(jsonData.uuid).to.be.not.empty;",
+									"});",
+									"",
+									"pm.environment.set(\"fieldLastUUID\", jsonData.uuid);",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\" : \"my field name ({{$timestamp}})\", \n    \"data_type\" : 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{domain}}/project/{{projectLastUUID}}/fields",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"project",
+								"{{projectLastUUID}}",
+								"fields"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "project/{uuid}/fields (5)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"    minimum = parseInt(pm.environment.get(\"minimumResponseTime\"))",
+									"    pm.expect(pm.response.responseTime).to.be.below(minimum);",
+									"});",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var jsonData = pm.response.json()",
+									"",
+									"pm.test(\"Json uuid is not empty\", function () { ",
+									"    pm.expect(jsonData.uuid).to.be.not.empty;",
+									"});",
+									"",
+									"pm.environment.set(\"fieldLastUUID\", jsonData.uuid);",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\" : \"my field name ({{$timestamp}})\", \n    \"data_type\" : 5\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{domain}}/project/{{projectLastUUID}}/fields",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"project",
+								"{{projectLastUUID}}",
+								"fields"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "project/{uuid}/fields (6)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"    minimum = parseInt(pm.environment.get(\"minimumResponseTime\"))",
+									"    pm.expect(pm.response.responseTime).to.be.below(minimum);",
+									"});",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var jsonData = pm.response.json()",
+									"",
+									"pm.test(\"Json uuid is not empty\", function () { ",
+									"    pm.expect(jsonData.uuid).to.be.not.empty;",
+									"});",
+									"",
+									"pm.environment.set(\"fieldLastUUID\", jsonData.uuid);",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\" : \"my field name ({{$timestamp}})\", \n    \"data_type\" : 6\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{domain}}/project/{{projectLastUUID}}/fields",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"project",
+								"{{projectLastUUID}}",
+								"fields"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "project/{uuid}/fields",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"    minimum = parseInt(pm.environment.get(\"minimumResponseTime\"))",
+									"    pm.expect(pm.response.responseTime).to.be.below(minimum);",
+									"});",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{domain}}/project/{{projectLastUUID}}/fields",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"project",
+								"{{projectLastUUID}}",
+								"fields"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "project/{uuid}/fields/{uuid}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"    minimum = parseInt(pm.environment.get(\"minimumResponseTime\"))",
+									"    pm.expect(pm.response.responseTime).to.be.below(minimum);",
+									"});",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"asd\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{domain}}/project/{{projectLastUUID}}/fields/{{fieldLastUUID}}",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"project",
+								"{{projectLastUUID}}",
+								"fields",
+								"{{fieldLastUUID}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "project/{uuid}/fields/{uuid}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"    minimum = parseInt(pm.environment.get(\"minimumResponseTime\"))",
+									"    pm.expect(pm.response.responseTime).to.be.below(minimum);",
+									"});",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{domain}}/project/{{projectLastUUID}}/fields/{{fieldLastUUID}}",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"project",
+								"{{projectLastUUID}}",
+								"fields",
+								"{{fieldLastUUID}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "project/{uuid}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"    minimum = parseInt(pm.environment.get(\"minimumResponseTime\"))",
+									"    pm.expect(pm.response.responseTime).to.be.below(minimum);",
+									"});",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{domain}}/project/{{projectLastUUID}}",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"project",
+								"{{projectLastUUID}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "task",
+			"item": [
+				{
+					"name": "task",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"    minimum = parseInt(pm.environment.get(\"minimumResponseTime\"))",
+									"    pm.expect(pm.response.responseTime).to.be.below(minimum);",
+									"});",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var jsonData = pm.response.json()",
+									"",
+									"pm.test(\"Json uuid is not empty\", function () { ",
+									"    pm.expect(jsonData.uuid).to.be.not.empty;",
+									"});",
+									"",
+									"pm.environment.set(\"taskLastUUID\", jsonData.uuid);",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"my task  ({{$timestamp}})\",\n    \"project_uuid\" : \"{{projectLastUUID}}\",\n    \"fields\" : { \n        \"a\" : 1,\n        \"b\" : 0\n    },\n    \"description\" : \"sadasd\",\n    \"coworkers_by\" : [\"nightsong@oviovi.site\"],\n    \"implimented_by\" : \"nightsong@oviovi.site\",\n    \"responsible_by\" : \"nightsong@oviovi.site\",\n    \"tags\" : [\"foo\",\"bar\"]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{domain}}/task",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"task"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "task/{uuid}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"    minimum = parseInt(pm.environment.get(\"minimumResponseTime\"))",
+									"    pm.expect(pm.response.responseTime).to.be.below(minimum);",
+									"});",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var jsonData = pm.response.json()",
+									"",
+									"pm.test(\"Json uuid is not empty\", function () { ",
+									"    pm.expect(jsonData.uuid).to.be.not.empty;",
+									"}); "
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{domain}}/task/{{taskLastUUID}}",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"task",
+								"{{taskLastUUID}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "task/{uuid}/name",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"    minimum = parseInt(pm.environment.get(\"minimumResponseTime\"))",
+									"    pm.expect(pm.response.responseTime).to.be.below(minimum);",
+									"});",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"my task\",\n    \"project_uuid\" : \"{{projectLastUUID}}\",\n    \"federation_uuid\" : \"{{federationLastUUID}}\",\n    \"fields\" : { \n        \"a\" : 1\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{domain}}/task/{{taskLastUUID}}/name",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"task",
+								"{{taskLastUUID}}",
+								"name"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "task/{uuid}/status",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"    minimum = parseInt(pm.environment.get(\"minimumResponseTime\"))",
+									"    pm.expect(pm.response.responseTime).to.be.below(minimum);",
+									"});",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"status\" : 2\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{domain}}/task/{{taskLastUUID}}/status",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"task",
+								"{{taskLastUUID}}",
+								"status"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "task/{uuid}/parent",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"    minimum = parseInt(pm.environment.get(\"minimumResponseTime\"))",
+									"    pm.expect(pm.response.responseTime).to.be.below(minimum);",
+									"});",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"uuid\": \"5fe3895a-7bd3-4bb8-b4d4-66f011043e8c\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{domain}}/task/{{taskLastUUID}}/parent",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"task",
+								"{{taskLastUUID}}",
+								"parent"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "task/{uuid}/team",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"    minimum = parseInt(pm.environment.get(\"minimumResponseTime\"))",
+									"    pm.expect(pm.response.responseTime).to.be.below(minimum);",
+									"});",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"responsible_by\": \"nightsong@oviovi.site\",\n    \"implemented_by\" : \"nightsong@oviovi.site\",\n    \"coworkers_by\" : [\"nightsong@oviovi.site\",\"nightsong@oviovi.site\"],\n    \"watched_by\" : [\"nightsong@oviovi.site\",\"nightsong@oviovi.site\"]\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{domain}}/task/{{taskLastUUID}}/team",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"task",
+								"{{taskLastUUID}}",
+								"team"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "task",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"    minimum = parseInt(pm.environment.get(\"minimumResponseTime\"))",
+									"    pm.expect(pm.response.responseTime).to.be.below(minimum);",
+									"});",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var jsonData = pm.response.json()",
+									"",
+									"pm.test(\"Json count is not null\", function () { ",
+									"    pm.expect(jsonData.count).to.be.not.null; ",
+									"});",
+									"",
+									"pm.test(\"Json items is not null\", function () { ",
+									"    pm.expect(jsonData.items).to.be.not.null; ",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{domain}}/task?federation_uuid={{federationLastUUID}}&project_uuid={{projectLastUUID}}&is_epic=false&status=0&offset=0&limit=10",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"task"
+							],
+							"query": [
+								{
+									"key": "federation_uuid",
+									"value": "{{federationLastUUID}}"
+								},
+								{
+									"key": "project_uuid",
+									"value": "{{projectLastUUID}}"
+								},
+								{
+									"key": "is_epic",
+									"value": "false"
+								},
+								{
+									"key": "status",
+									"value": "0"
+								},
+								{
+									"key": "name",
+									"value": "as",
+									"disabled": true
+								},
+								{
+									"key": "tags",
+									"value": "[\"a\"]",
+									"disabled": true
+								},
+								{
+									"key": "offset",
+									"value": "0"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "is_my",
+									"value": "false",
+									"disabled": true
+								},
+								{
+									"key": "paticipated",
+									"value": "asdsad",
+									"disabled": true
+								},
+								{
+									"key": "fields",
+									"value": "{\"a\":1}",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "task/{uuid}/comment",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"    minimum = parseInt(pm.environment.get(\"minimumResponseTime\"))",
+									"    pm.expect(pm.response.responseTime).to.be.below(minimum);",
+									"});",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var jsonData = pm.response.json()",
+									"",
+									"pm.test(\"Json uuid is not empty\", function () { ",
+									"    pm.expect(jsonData.uuid).to.be.not.empty;",
+									"});",
+									"",
+									"pm.environment.set(\"commentLastUUID\", jsonData.uuid);",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"comment\" : \"blabla {{$timestamp}} {{$randomWords}}\",\n    \"reply_uuid\" : \"9d8a4530-33d1-4ff0-b6ed-af6474a960a0\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{domain}}/task/{{taskLastUUID}}/comment",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"task",
+								"{{taskLastUUID}}",
+								"comment"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "task/{uuid}/comment",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"    minimum = parseInt(pm.environment.get(\"minimumResponseTime\"))",
+									"    pm.expect(pm.response.responseTime).to.be.below(minimum);",
+									"});",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var jsonData = pm.response.json()",
+									"",
+									"pm.test(\"Json uuid is not empty\", function () { ",
+									"    pm.expect(jsonData.uuid).to.be.not.empty;",
+									"});",
+									"",
+									"pm.environment.set(\"commentLastUUID\", jsonData.uuid);",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{domain}}/task/{{taskLastUUID}}/comment",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"task",
+								"{{taskLastUUID}}",
+								"comment"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "task/{uuid}/comment{uuid}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"    minimum = parseInt(pm.environment.get(\"minimumResponseTime\"))",
+									"    pm.expect(pm.response.responseTime).to.be.below(minimum);",
+									"});",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{domain}}/task/{{taskLastUUID}}/comment/{{commentLastUUID}}",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"task",
+								"{{taskLastUUID}}",
+								"comment",
+								"{{commentLastUUID}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "task/{uuid}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"    minimum = parseInt(pm.environment.get(\"minimumResponseTime\"))",
+									"    pm.expect(pm.response.responseTime).to.be.below(minimum);",
+									"});",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"comment\" : \"blabla {{$timestamp}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{domain}}/task/{{taskLastUUID}}",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"task",
+								"{{taskLastUUID}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "user",
+			"item": [
+				{
+					"name": "user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"    minimum = parseInt(pm.environment.get(\"minimumResponseTime\"))",
+									"    pm.expect(pm.response.responseTime).to.be.below(minimum);",
+									"});",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var jsonData = pm.response.json()",
+									"",
+									" "
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"federation_uuid\": \"{{federationLastUUID}}\",\n    \"search\" : \"ong-4 79031112\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{domain}}/user",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"user"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "dictionaries",
+			"item": [
+				{
+					"name": "dictionary",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"    minimum = parseInt(pm.environment.get(\"minimumResponseTime\"))",
+									"    pm.expect(pm.response.responseTime).to.be.below(minimum);",
+									"});",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var jsonData = pm.response.json()",
+									"",
+									"pm.test(\"Json uuid is not empty\", function () { ",
+									"    pm.expect(jsonData.uuid).to.be.not.empty;",
+									"});",
+									"",
+									"pm.environment.set(\"projectLastUUID\", jsonData.uuid);",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\" : \"my project ({{$timestamp}})\",\n    \"company_uuid\" : \"{{companyLastUUID}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{domain}}/dictionary",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"dictionary"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "dictionary/{uuid}/name",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"    minimum = parseInt(pm.environment.get(\"minimumResponseTime\"))",
+									"    pm.expect(pm.response.responseTime).to.be.below(minimum);",
+									"});",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\" : \"my project ({{$timestamp}})\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{domain}}/dictionary/{{dictionaryLastUUID}}/name",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"dictionary",
+								"{{dictionaryLastUUID}}",
+								"name"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "dictionary/{uuid}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"    minimum = parseInt(pm.environment.get(\"minimumResponseTime\"))",
+									"    pm.expect(pm.response.responseTime).to.be.below(minimum);",
+									"});",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var jsonData = pm.response.json()",
+									"",
+									"pm.test(\"Json uuid is not empty\", function () { ",
+									"    pm.expect(jsonData.uuid).to.be.not.empty;",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{domain}}/dictionary/{{dictionaryLastUUID}}",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"dictionary",
+								"{{dictionaryLastUUID}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "dictionary/{uuid}/fields (1)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"    minimum = parseInt(pm.environment.get(\"minimumResponseTime\"))",
+									"    pm.expect(pm.response.responseTime).to.be.below(minimum);",
+									"});",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var jsonData = pm.response.json()",
+									"",
+									"pm.test(\"Json uuid is not empty\", function () { ",
+									"    pm.expect(jsonData.uuid).to.be.not.empty;",
+									"});",
+									"",
+									"pm.environment.set(\"dictionaryFieldLastUUID\", jsonData.uuid);",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\" : \"my field name ({{$timestamp}})\", \n    \"data_type\" : 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{domain}}/dictionary/{{dictionaryLastUUID}}/fields",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"dictionary",
+								"{{dictionaryLastUUID}}",
+								"fields"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "dictionary/{uuid}/fields (5)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"    minimum = parseInt(pm.environment.get(\"minimumResponseTime\"))",
+									"    pm.expect(pm.response.responseTime).to.be.below(minimum);",
+									"});",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var jsonData = pm.response.json()",
+									"",
+									"pm.test(\"Json uuid is not empty\", function () { ",
+									"    pm.expect(jsonData.uuid).to.be.not.empty;",
+									"});",
+									"",
+									"pm.environment.set(\"dictionaryFieldLastUUID\", jsonData.uuid);",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\" : \"my field name ({{$timestamp}})\", \n    \"data_type\" : 5\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{domain}}/dictionary/{{dictionaryLastUUID}}/fields",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"dictionary",
+								"{{dictionaryLastUUID}}",
+								"fields"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "dictionary/{uuid}/fields (6)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"    minimum = parseInt(pm.environment.get(\"minimumResponseTime\"))",
+									"    pm.expect(pm.response.responseTime).to.be.below(minimum);",
+									"});",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var jsonData = pm.response.json()",
+									"",
+									"pm.test(\"Json uuid is not empty\", function () { ",
+									"    pm.expect(jsonData.uuid).to.be.not.empty;",
+									"});",
+									"",
+									"pm.environment.set(\"dictionaryFieldLastUUID\", jsonData.uuid);",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\" : \"my field name ({{$timestamp}})\", \n    \"data_type\" : 6\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{domain}}/dictionary/{{dictionaryLastUUID}}/fields",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"dictionary",
+								"{{dictionaryLastUUID}}",
+								"fields"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "dictionary/{uuid}/fields",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"    minimum = parseInt(pm.environment.get(\"minimumResponseTime\"))",
+									"    pm.expect(pm.response.responseTime).to.be.below(minimum);",
+									"});",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{domain}}/dictionary/{{dictionaryLastUUID}}/fields",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"dictionary",
+								"{{dictionaryLastUUID}}",
+								"fields"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "dictionary/{uuid}/fields/{uuid}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"    minimum = parseInt(pm.environment.get(\"minimumResponseTime\"))",
+									"    pm.expect(pm.response.responseTime).to.be.below(minimum);",
+									"});",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"asd\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{domain}}/dictionary/{{dictionaryLastUUID}}/fields/{{dictionaryFieldLastUUID}}",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"dictionary",
+								"{{dictionaryLastUUID}}",
+								"fields",
+								"{{dictionaryFieldLastUUID}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "dictionary/{uuid}/data",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"    minimum = parseInt(pm.environment.get(\"minimumResponseTime\"))",
+									"    pm.expect(pm.response.responseTime).to.be.below(minimum);",
+									"});",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var jsonData = pm.response.json()",
+									"",
+									"pm.test(\"Json uuid is not empty\", function () { ",
+									"    pm.expect(jsonData.uuid).to.be.not.empty;",
+									"});",
+									"",
+									"pm.environment.set(\"projectLastUUID\", jsonData.uuid);",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"a\" : 1,\n    \"b\" : \"2\",\n    \"c\" : true,\n    \"d\" : 2\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{domain}}/dictionary/{{dictionaryLastUUID}}/data",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"dictionary",
+								"{{dictionaryLastUUID}}",
+								"data"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "dictionary/{uuid}/fields/{uuid}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"    minimum = parseInt(pm.environment.get(\"minimumResponseTime\"))",
+									"    pm.expect(pm.response.responseTime).to.be.below(minimum);",
+									"});",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{domain}}/dictionary/{{dictionaryLastUUID}}/dictionary/{{dictionaryFieldLastUUID}}",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"dictionary",
+								"{{dictionaryLastUUID}}",
+								"dictionary",
+								"{{dictionaryFieldLastUUID}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "dictionary/{uuid}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"    minimum = parseInt(pm.environment.get(\"minimumResponseTime\"))",
+									"    pm.expect(pm.response.responseTime).to.be.below(minimum);",
+									"});",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{domain}}/dictionary/{{dictionaryLastUUID}}",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"dictionary",
+								"{{dictionaryLastUUID}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "/about",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response time is less than 200ms\", function () {",
+							"    minimum = parseInt(pm.environment.get(\"minimumResponseTime\"))",
+							"    pm.expect(pm.response.responseTime).to.be.below(minimum);",
+							"});",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{domain}}/about",
+					"host": [
+						"{{domain}}"
+					],
+					"path": [
+						"about"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/metrics",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response time is less than 200ms\", function () {",
+							"    minimum = parseInt(pm.environment.get(\"minimumResponseTime\"))",
+							"    pm.expect(pm.response.responseTime).to.be.below(minimum);",
+							"});",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{domain}}/metrics",
+					"host": [
+						"{{domain}}"
+					],
+					"path": [
+						"metrics"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "openapi.yaml",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response time is less than 2000ms\", function () {",
+							"    minimum = parseInt(pm.environment.get(\"minimumResponseTime\"))",
+							"    pm.expect(pm.response.responseTime).to.be.below(minimum);",
+							"});",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{domain}}/openapi.yaml",
+					"host": [
+						"{{domain}}"
+					],
+					"path": [
+						"openapi.yaml"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/health",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response time is less than 200ms\", function () {",
+							"    minimum = parseInt(pm.environment.get(\"minimumResponseTime\"))",
+							"    pm.expect(pm.response.responseTime).to.be.below(minimum);",
+							"});",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{domain}}/health",
+					"host": [
+						"{{domain}}"
+					],
+					"path": [
+						"health"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/seed",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{domain}}/seed?usersCount=5&projectsCount=2&cores=4&tasksCountPerCore=1000&batch=500",
+					"host": [
+						"{{domain}}"
+					],
+					"path": [
+						"seed"
+					],
+					"query": [
+						{
+							"key": "usersCount",
+							"value": "5"
+						},
+						{
+							"key": "projectsCount",
+							"value": "2"
+						},
+						{
+							"key": "cores",
+							"value": "4"
+						},
+						{
+							"key": "tasksCountPerCore",
+							"value": "1000"
+						},
+						{
+							"key": "batch",
+							"value": "500"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

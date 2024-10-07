@@ -1,0 +1,89 @@
+name: main
+run-name: ${{ github.actor }} - Testing and publishing
+
+on:
+  push:
+    paths-ignore:
+    - '*.md'
+    - '**/*.md'
+
+env:
+  GOLANG_VERSION: "1.21" 
+  REGISTRY_IMAGE_NAME: "crm-back"
+  
+jobs: 
+  prepare:
+    name: Prepare variables
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.prepare.outputs.version }}
+      commit: ${{ steps.prepare.outputs.commit }}
+      branch: ${{ steps.prepare.outputs.branch }}
+      tag: ${{ steps.prepare.outputs.tag }} 
+    steps:
+    - name: Prepare variables
+      id: prepare
+      shell: bash
+      run: |
+        BRANCH=$(echo ${GITHUB_REF#refs/heads/} | tr '\' '-')
+        COMMIT_SHA_SHORT=$(echo ${GITHUB_SHA} | cut -c1-7)
+        VERSION=$(echo ${BRANCH}-${COMMIT_SHA_SHORT})
+        TAG=$(echo ${GITHUB_REF#refs/*/})
+
+        echo "tag=${GITHUB_REF#refs/*/}" >> $GITHUB_OUTPUT
+        echo "version=${VERSION}" >> $GITHUB_OUTPUT
+        echo "commit=${COMMIT_SHA_SHORT}" >> $GITHUB_OUTPUT
+        echo "branch=${BRANCH}" >> $GITHUB_OUTPUT
+
+        echo version: $VERSION
+        echo commit: $COMMIT_SHA_SHORT
+        echo branch: $BRANCH
+        echo tag: $TAG 
+ 
+  lint:
+    name: Linting
+    runs-on: ubuntu-latest 
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-go@v3
+        with:
+          go-version: ${{ env.GOLANG_VERSION }}
+          go-version-file: 'go.mod'
+          cache-dependency-path: 'go.sum'
+      - uses: golangci/golangci-lint-action@v3
+        with:
+          version: v1.55.2
+          args: "--fix=false"
+
+  test:
+    name: Unit tests
+    runs-on: ubuntu-latest 
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-go@v3
+        with:
+          go-version: ${{ env.GOLANG_VERSION }}
+          go-version-file: 'go.mod'
+          cache-dependency-path: 'go.sum'
+      - name: Caches
+        uses: actions/cache@v3
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+      - name: Install dependencies
+        run: |
+          go mod download
+      - name: Check tidiness
+        run: |
+          touch .env
+          make tidy
+          if [[ $(git diff --stat) != '' ]]; then
+            git diff
+            echo 'run `make tidy` and commit changes'
+            exit 1
+          fi
+      - name: Run unit tests
+        run: |
+          make test

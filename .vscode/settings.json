@@ -1,0 +1,66 @@
+{
+    "cSpell.words": [
+        "dbname",
+        "godotenv",
+        "openapi"
+    ],
+    "go.lintTool": "golangci-lint",
+    "go.lintFlags": [
+        "--config=${workspaceFolder}/.golangci.yml",
+        "--fast",
+    ],
+    "go.testEnvFile": "${workspaceFolder}/.env",
+    "go.testFlags": [
+        "-coverpkg",
+        "./...",
+    ],
+    "actionButtons": {
+        "defaultColor": "#00000", // Can also use string color names.
+        "loadNpmCommands": false, // Disables automatic generation of actions for npm commands.
+        "reloadButton": "", // Custom reload button text or icon (default ↻). null value enables automatic reload on configuration change
+        "commands": [
+            {
+                "cwd": "${workspaceFolder}",
+                "name": "gen",
+                "singleInstance": true,
+                "command": "make gen", // This is executed in the terminal.
+            },
+            {
+                "cwd": "${workspaceFolder}",
+                "name": "lint",
+                "singleInstance": true,
+                "command": "make lint", // This is executed in the terminal.
+            },
+            {
+                "cwd": "${workspaceFolder}",
+                "name": "check",
+                "singleInstance": true,
+                "command": "make check", // This is executed in the terminal.
+            },
+            {
+                "cwd": "${workspaceFolder}",
+                "name": "testify",
+                "singleInstance": true,
+                "command": "make testify", // This is executed in the terminal.
+            },
+            {
+                "cwd": "${workspaceFolder}",
+                "name": "wire",
+                "singleInstance": true,
+                "command": "make wire", // This is executed in the terminal.
+            },
+            {
+                "cwd": "${workspaceFolder}",
+                "name": "migrate",
+                "singleInstance": true,
+                "command": "make migrate", // This is executed in the terminal.
+            },
+            {
+                "cwd": "${workspaceFolder}",
+                "name": "migrate-down",
+                "singleInstance": true,
+                "command": "make migrate-down", // This is executed in the terminal.
+            },
+        ]
+    }
+}

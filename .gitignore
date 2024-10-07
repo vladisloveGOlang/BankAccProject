@@ -1,0 +1,29 @@
+# Mac OS X files
+.DS_Store
+
+# Binaries for programs and plugins
+*.dll
+*.so
+*.dylib
+bin
+cmd/web/__*
+cmd/cli/__*
+
+# Test binary, built with `go test -c`
+*.test
+
+# Output of the go coverage tool, specifically when used with LiteIDE
+*.out
+#env
+.env
+
+cover.out
+lint.txt
+
+# modules
+testify
+
+# IDE 
+data
+
+requests.txt

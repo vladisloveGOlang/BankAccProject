@@ -1,0 +1,24 @@
+name: manual
+run-name: Manula - Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Version to deploy'
+        required: true
+        default: '-'
+
+env: 
+  REGISTRY_IMAGE_NAME: "crm-back"
+  
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest 
+    steps:
+
+
+    - name: Update image tag
+      shell: bash
+      run:
